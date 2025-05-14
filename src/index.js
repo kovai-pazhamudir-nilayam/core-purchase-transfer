@@ -8,7 +8,7 @@ const fastifyMetrics = require("fastify-metrics");
 
 const { envSchema: schema } = require("./app/commons/schemas/envSchemas");
 const { knexConfig } = require("../config/index");
-const routes = require("./app/users/routes");
+const purchaseOrderRoutes = require("./app/purchase-order/routes");
 
 // PLUGINS
 const ajv = require("./app/plugins/ajv");
@@ -66,7 +66,7 @@ async function create() {
   await fastify.register(artifactPlugin);
 
   // ROUTES
-  await fastify.register(routes, { prefix: "/v1" });
+  await fastify.register(purchaseOrderRoutes, { prefix: "/v1/po" });
 
   // Fastify-metrics
   if (process.env.NODE_ENV !== "test") {
