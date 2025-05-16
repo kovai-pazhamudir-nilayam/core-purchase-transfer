@@ -64,11 +64,11 @@ const postPurchaseOrder = {
             po_quantity: { $ref: "request-po-quantity#" },
             mrp: { $ref: "request-amount#" },
             tot: { $ref: "request-tot#" },
-            discount: { $ref: "request-po-discount#" },
+            discount: { $ref: "request-discount#" },
             unit_price: { $ref: "request-amount#" },
             tax_included_in_price: { type: "boolean" },
             tax_code: { type: "string" },
-            taxes: { $ref: "request-po-tax#" },
+            taxes: { $ref: "request-taxes#" },
             approved_margin_pct: { type: "number" }
           }
         }

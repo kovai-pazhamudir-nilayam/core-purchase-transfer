@@ -2,34 +2,58 @@ const { logQuery } = require("../../commons/helpers");
 const { PURCHASE_ORDER, PURCHASE_LINE } = require("../commons/constants");
 
 function purchaseOrderRepo(fastify) {
-  async function createOrder({ input, logTrace }) {
+  async function upsertOrder({ input, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_ORDER.NAME).returning("*").insert(input);
+    const query = knex(PURCHASE_ORDER.NAME)
+      .insert(input)
+      .onConflict(PURCHASE_ORDER.COLUMNS.PURCHASE_ORDER_ID) // upsert by primary key
+      .merge()
+      .returning("*");
+
     logQuery({
       logger: fastify.log,
       query,
-      context: "Create Order",
+      context: "Upsert Order",
       logTrace
     });
+
     const response = await query;
     return response[0];
   }
 
-  async function createPurchaseOrderLines({ input, logTrace }) {
+  async function upsertPurchaseOrderLines({ input, logTrace }) {
     const knex = this;
     const query = knex(PURCHASE_LINE.NAME)
       .insert(input)
-      .onConflict(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_LINE_ID)
-      .merge();
+      .onConflict(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_LINE_ID) // ['purchase_order_id', 'po_line_id']
+      .merge()
+      .returning("*");
 
     logQuery({
       logger: fastify.log,
       query,
-      context: "Create Order Lines",
+      context: "Upsert Order Lines",
+      logTrace
+    });
+
+    const response = await query;
+    return response;
+  }
+
+  async function deletePurchaseOrderLines({ purchaseOrderId, logTrace }) {
+    const knex = this;
+    const query = knex(PURCHASE_LINE.NAME)
+      .where(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_ID, purchaseOrderId)
+      .del();
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "delete Order Lines",
       logTrace
     });
     const response = await query;
-    return response[0];
+    return response;
   }
 
   async function fetchOrderWithLines({ purchaseOrderId, logTrace }) {
@@ -60,10 +84,29 @@ function purchaseOrderRepo(fastify) {
     return response[0];
   }
 
+  async function getPurcaseOrderByPoNumber({ po_number, logTrace }) {
+    const knex = this;
+    const query = knex(PURCHASE_ORDER.NAME)
+      .select("*")
+      .where(PURCHASE_ORDER.COLUMNS.PO_NUMBER, po_number)
+      .first();
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "Fetch Purchase Order by po_number",
+      logTrace
+    });
+    const response = await query;
+    return response;
+  }
+
   return {
-    createOrder,
+    upsertOrder,
     fetchOrderWithLines,
-    createPurchaseOrderLines
+    upsertPurchaseOrderLines,
+    getPurcaseOrderByPoNumber,
+    deletePurchaseOrderLines
   };
 }
 

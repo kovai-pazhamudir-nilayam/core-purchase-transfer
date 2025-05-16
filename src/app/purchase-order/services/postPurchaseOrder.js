@@ -6,16 +6,33 @@ const {
 } = require("../transform/purchaseOrder");
 
 function postPurchaseOrderService(fastify) {
-  const { createOrder, createPurchaseOrderLines } = purchaseOrderRepo(fastify);
+  const {
+    upsertOrder,
+    upsertPurchaseOrderLines,
+    getPurcaseOrderByPoNumber,
+    deletePurchaseOrderLines
+  } = purchaseOrderRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
       message: "create purchase-order service",
       logTrace
     });
+    let purchaseOrderId = uuidv4();
 
-    const { po_lines } = body;
-    const purchaseOrderId = uuidv4();
+    const { po_lines, po_number } = body;
+    const existingPo = await getPurcaseOrderByPoNumber.call(fastify.knex, {
+      po_number,
+      logTrace
+    });
+
+    if (existingPo) {
+      purchaseOrderId = existingPo.purchase_order_id;
+      await deletePurchaseOrderLines.call(fastify.knex, {
+        purchaseOrderId,
+        logTrace
+      });
+    }
 
     const purchaseOrderInput = transformForPurchaseOrder({
       purchaseOrderId,
@@ -29,22 +46,21 @@ function postPurchaseOrderService(fastify) {
     const knexTrx = await fastify.knex.transaction();
     try {
       await Promise.all([
-        createOrder.call(knexTrx, {
+        upsertOrder.call(knexTrx, {
           input: purchaseOrderInput,
           logTrace
         }),
-        createPurchaseOrderLines.call(knexTrx, {
+        upsertPurchaseOrderLines.call(knexTrx, {
           input: purchaseOrderLinesInput,
           logTrace
         })
       ]);
       await knexTrx.commit();
+      return { purchase_order_id: purchaseOrderId };
     } catch (error) {
       await knexTrx.rollback();
       throw error;
     }
-
-    // return response;
   };
 }
 module.exports = postPurchaseOrderService;

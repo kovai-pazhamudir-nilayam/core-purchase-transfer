@@ -67,6 +67,7 @@ const phone_number = {
     number: { type: "string" }
   }
 };
+
 const expectedDeliverySchema = {
   $id: "request-expected-delivery",
   type: "object",
@@ -87,6 +88,7 @@ const amount = {
     fraction: { type: "integer" }
   }
 };
+
 const poIteam = {
   $id: "request-po-item",
   type: "object",
@@ -107,6 +109,7 @@ const poIteam = {
     brand_id: { type: "string" }
   }
 };
+
 const poQuantitySchema = {
   $id: "request-po-quantity",
   type: "object",
@@ -117,6 +120,7 @@ const poQuantitySchema = {
     quantity_uom: { type: "string" }
   }
 };
+
 const poTotSchema = {
   $id: "request-tot",
   type: "object",
@@ -128,7 +132,7 @@ const poTotSchema = {
 };
 
 const discountSchema = {
-  $id: "request-po-discount",
+  $id: "request-discount",
   type: "object",
   required: ["discount_type"],
   properties: {
@@ -147,13 +151,16 @@ const discountSchema = {
 };
 
 const taxSchema = {
-  $id: "request-po-tax",
+  $id: "request-taxes",
   type: "array",
   items: {
     type: "object",
     required: ["tax_type", "tax_rate", "unit_amount"],
     properties: {
-      tax_type: { type: "string" },
+      tax_type: {
+        type: "string",
+        enum: ["CGST", "SGST", "IGST", "CESS"]
+      },
       tax_rate: { type: "number" },
       unit_amount: {
         type: "object",
@@ -248,6 +255,168 @@ const destinationAddressSchema = {
   }
 };
 
+const supplierSchema = {
+  $id: "request-supplier",
+  type: "object",
+  required: [
+    "supplier_type",
+    "vendor_id",
+    "source_site_id",
+    "supplier_document"
+  ],
+  additionalProperties: false,
+  properties: {
+    supplier_type: {
+      type: "string",
+      enum: ["VENDOR", "WAREHOUSE", "OUTLET", "CC"]
+    },
+    vendor_id: { type: "string" },
+    source_site_id: { type: "string" },
+    supplier_document: {
+      type: "object",
+      required: ["state_code", "number"],
+      additionalProperties: false,
+      properties: {
+        state_code: { type: "string" },
+        number: { type: "string" }
+      }
+    }
+  }
+};
+
+const supplierInvoice = {
+  $id: "request-supplier-invoice",
+  type: "object",
+  required: [
+    "supplier_invoice_type",
+    "supplier_invoice_number",
+    "supplier_invoice_amount",
+    "supplier_invoice_date"
+  ],
+  additionalProperties: false,
+  properties: {
+    supplier_invoice_type: { type: "string" },
+    supplier_invoice_number: { type: "string" },
+    supplier_invoice_amount: {
+      type: "object",
+      required: ["currency", "cent_amount", "fraction"],
+      properties: {
+        currency: { type: "string" },
+        cent_amount: { type: "integer" },
+        fraction: { type: "integer" }
+      }
+    },
+    supplier_invoice_date: { type: "string" },
+    supplier_invoice_url: { type: "string" }
+  }
+};
+
+const grnLineIteam = {
+  $id: "request-grn-item",
+  type: "object",
+  required: [
+    "ksin",
+    "erp_title",
+    "legacy_id",
+    "primary_image_url",
+    "category_id",
+    "brand_id"
+  ],
+  properties: {
+    ksin: { type: "string" },
+    erp_title: { type: "string" },
+    legacy_id: { type: "string" },
+    primary_image_url: { type: "string" },
+    category_id: { type: "string" },
+    brand_id: { type: "string" }
+  }
+};
+
+const grnQuantity = {
+  $id: "request-grn_quantity",
+  type: "object",
+  required: [
+    "good_quantity",
+    "bad_quantity",
+    "excess_quantity",
+    "shortage_quantity",
+    "free_quantity",
+    "quantity_uom"
+  ],
+  additionalProperties: false,
+  properties: {
+    good_quantity: { type: "number" },
+    bad_quantity: { type: "number" },
+    excess_quantity: { type: "number" },
+    shortage_quantity: { type: "number" },
+    free_quantity: { type: "number" },
+    quantity_uom: { type: "string" }
+  }
+};
+
+const stoSourceDocumentSchema = {
+  $id: "request-source-document",
+  type: "object",
+  required: ["state_code", "number"],
+  additionalProperties: false,
+  properties: {
+    state_code: { type: "string" },
+    number: { type: "string" }
+  }
+};
+
+const stoDestinationDocument = {
+  $id: "request-destination-document",
+  type: "object",
+  required: ["state_code", "number"],
+  additionalProperties: false,
+  properties: {
+    state_code: { type: "string" },
+    number: { type: "string" }
+  }
+};
+
+const stoQuantity = {
+  $id: "request-st-quantity",
+  type: "object",
+  required: ["quantity", "quantity_uom"],
+  properties: {
+    quantity: { type: "number" },
+    quantity_uom: { type: "string" }
+  }
+};
+
+const stoHuDetails = {
+  $id: "request-hu-details",
+  type: "array",
+  items: {
+    type: "object",
+    required: ["hu_number", "hu_quantity"],
+    properties: {
+      hu_number: { type: "string" },
+      hu_quantity: {
+        type: "object",
+        required: ["quantity_number", "quantity_uom"],
+        properties: {
+          quantity_number: { type: "string" },
+          quantity_uom: { type: "string" }
+        }
+      }
+    }
+  }
+};
+
+const stoAmount = {
+  $id: "request-sto-amount",
+  type: "object",
+  required: ["currency", "cent_amount", "fraction"],
+  properties: {
+    currency: { type: "string" },
+    cent_amount: { type: "string" },
+    fraction: { type: "string" }
+  }
+};
+
 exports.commonRequestSchemas = [
   auditSchema,
   headers,
@@ -263,5 +432,14 @@ exports.commonRequestSchemas = [
   supplierAddressSchema,
   taxSchema,
   destinationAddressSchema,
-  expectedDeliverySchema
+  expectedDeliverySchema,
+  supplierSchema,
+  supplierInvoice,
+  grnLineIteam,
+  grnQuantity,
+  stoSourceDocumentSchema,
+  stoDestinationDocument,
+  stoQuantity,
+  stoHuDetails,
+  stoAmount
 ];
