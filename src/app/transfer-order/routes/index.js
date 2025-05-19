@@ -4,7 +4,7 @@ const handlers = require("../handlers");
 module.exports = async fastify => {
   fastify.route({
     method: "POST",
-    url: "/save",
+    url: "/",
     schema: schemas.postTransferOrder,
     handler: handlers.postTransferOrder(fastify)
   });
