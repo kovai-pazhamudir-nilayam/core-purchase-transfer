@@ -93,12 +93,12 @@ const poIteam = {
   $id: "request-po-item",
   type: "object",
   required: [
-    "ksin",
-    "kpn_title",
-    "legacy_id",
-    "primary_image_url",
-    "category_id",
-    "brand_id"
+    "ksin"
+    // "kpn_title",
+    // "legacy_id",
+    // "primary_image_url",
+    // "category_id",
+    // "brand_id"
   ],
   properties: {
     ksin: { type: "string" },

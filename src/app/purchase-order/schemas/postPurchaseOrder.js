@@ -48,14 +48,14 @@ const postPurchaseOrder = {
         items: {
           type: "object",
           required: [
-            "po_line_id",
+            // "po_line_id",
             "item",
             "po_quantity",
             "mrp",
             "unit_price",
             "tax_included_in_price",
-            "tax_code",
-            "taxes",
+            // "tax_code",
+            // "taxes",
             "approved_margin_pct"
           ],
           properties: {

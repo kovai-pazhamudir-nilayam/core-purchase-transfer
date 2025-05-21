@@ -19,7 +19,7 @@ const knex = require("./app/plugins/knex");
 const readGcpSecret = require("./app/plugins/readGcpSecret");
 const httpClient = require("./app/plugins/httpClient");
 const pubsub = require("./app/plugins/pubsub");
-const cloudBucket = require("./app/plugins/cloudBucket");
+// const cloudBucket = require("./app/plugins/cloudBucket");
 const artifactPlugin = require("./app/plugins/artifact-file-upload");
 
 const {
@@ -64,7 +64,7 @@ async function create() {
   await fastify.register(swagger, SWAGGER_CONFIGS);
   await fastify.register(swaggerUi, SWAGGER_UI_CONFIGS);
   await fastify.register(pubsub);
-  await fastify.register(cloudBucket);
+  // await fastify.register(cloudBucket);
   await fastify.register(artifactPlugin);
 
   // ROUTES
