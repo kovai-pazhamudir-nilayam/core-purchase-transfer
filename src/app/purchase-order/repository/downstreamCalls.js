@@ -7,7 +7,7 @@ function downstreamCallsRepo(fastify) {
     const authToken = await getAuthToken("PLATFORM");
     try {
       const response = await fastify.request({
-        url: `${fastify.config.CORE_NETWORK_SERVICE_URI}/v1/outlets/${siteId}`,
+        url: `${process.env.CORE_NETWORK_SERVICE_URI}/v1/outlets/${siteId}`,
         path: "/network/v1/outlets",
         method: "GET",
         headers: {
