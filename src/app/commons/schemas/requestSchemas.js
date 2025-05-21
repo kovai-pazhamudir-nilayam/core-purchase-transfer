@@ -155,7 +155,7 @@ const taxSchema = {
   type: "array",
   items: {
     type: "object",
-    required: ["tax_type", "tax_rate", "unit_amount"],
+    // required: ["tax_type", "tax_rate", "unit_amount"],
     properties: {
       tax_type: {
         type: "string",
@@ -164,7 +164,7 @@ const taxSchema = {
       tax_rate: { type: "number" },
       unit_amount: {
         type: "object",
-        required: ["currency", "cent_amount", "fraction"],
+        // required: ["currency", "cent_amount", "fraction"],
         properties: {
           currency: { type: "string" },
           cent_amount: { type: "string" },
@@ -180,15 +180,15 @@ const supplierAddressSchema = {
   type: "object",
   required: [
     "address_line1",
-    "address_line2",
-    "city",
-    "state",
-    "post_code",
-    "country",
-    "phone_number",
-    "email_id",
-    "address_id",
-    "country_code"
+    "address_line2"
+    // "city",
+    // "state",
+    // "post_code",
+    // "country",
+    // "phone_number",
+    // "email_id",
+    // "address_id",
+    // "country_code"
   ],
   properties: {
     address_id: { type: "string", format: "uuid" },
@@ -219,16 +219,16 @@ const destinationAddressSchema = {
   $id: "request-destination-address",
   type: "object",
   required: [
-    "address_line1",
-    "address_line2",
-    "city",
-    "state",
-    "post_code",
-    "country",
-    "phone_number",
-    "email_id",
-    "address_id",
-    "country_code"
+    // "address_line1",
+    // "address_line2",
+    // "city",
+    // "state",
+    // "post_code",
+    // "country",
+    // "phone_number",
+    // "email_id",
+    // "address_id",
+    // "country_code"
   ],
   properties: {
     address_id: { type: "string", format: "uuid" },

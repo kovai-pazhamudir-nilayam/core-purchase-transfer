@@ -10,10 +10,10 @@ env:
   GCR_GKE_PROJECT: kpn-platform-components
   GITHUB_SHA: ${{ github.sha }}
   GKE_ZONE: asia-south1
-  IMAGE: core-user-service
+  IMAGE: core-purchase-transfer
   REGISTRY_HOSTNAME: us-docker.pkg.dev
   REPOSITORY: us.gcr.io
-  APP_NAME: core-user-service
+  APP_NAME: core-purchase-transfer
 
 jobs:
   node-build-deploy:
@@ -65,4 +65,4 @@ jobs:
         env:
           HELM_OPTS: --set-string environmentVariables.GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID_PRD }}
         run: |
-          helm upgrade --install --wait core-user-service deployment/charts/$APP_NAME --namespace core-commerce $HELM_OPTS --set image.tag=$GITHUB_SHA -f deployment/charts/config/values-prod.yaml
+          helm upgrade --install --wait core-purchase-transfer deployment/charts/$APP_NAME --namespace purchase-tranfer $HELM_OPTS --set image.tag=$GITHUB_SHA -f deployment/charts/config/values-prod.yaml

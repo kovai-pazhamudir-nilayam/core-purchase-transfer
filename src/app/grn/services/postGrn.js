@@ -1,4 +1,5 @@
 const purchaseOrderRepo = require("../repository/grn");
+const downstreamCallsRepo = require("../repository/downstreamCalls");
 const { transformForGrn, transformForGrnLines } = require("../transform/grn");
 
 function postGrnService(fastify) {
@@ -8,6 +9,7 @@ function postGrnService(fastify) {
     getGrnByIdNumber,
     deleteGrnLines
   } = purchaseOrderRepo(fastify);
+  const { getKsinDetails } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
@@ -15,7 +17,7 @@ function postGrnService(fastify) {
       logTrace
     });
 
-    const { grn_id } = body;
+    const { grn_id, grn_lines } = body;
     const existingGrn = await getGrnByIdNumber.call(fastify.knex, {
       grn_id,
       logTrace
@@ -28,11 +30,25 @@ function postGrnService(fastify) {
       });
     }
 
+    const ksins = [
+      ...new Set(grn_lines.map(line => line.item?.ksin).filter(Boolean))
+    ];
+    const ksinDetails = await getKsinDetails({
+      body: {
+        catalog_version: "ONLINE",
+        ksins,
+        include_media: true,
+        include_packlist: true
+      },
+      logTrace
+    });
+
     const purchaseOrderInput = transformForGrn({
       body
     });
     const purchaseOrderLinesInput = transformForGrnLines({
-      body
+      body,
+      ksinDetails
     });
 
     const knexTrx = await fastify.knex.transaction();

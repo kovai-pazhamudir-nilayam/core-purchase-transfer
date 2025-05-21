@@ -1,3 +1,5 @@
+const { transformCatalogDetail } = require("./catalogDetail");
+
 function transformForStoTransferOrder({ body }) {
   const {
     source_document,
@@ -15,14 +17,16 @@ function transformForStoTransferOrder({ body }) {
   };
   return response;
 }
-function transformForStoTransferOrderLines({ body }) {
+function transformForStoTransferOrderLines({ body, ksinDetails }) {
   const { sto_lines, sto_number } = body;
+  const itemMap = transformCatalogDetail({ ksinDetails });
+
   return sto_lines.map(line => {
     const { item, sto_quantity, unit_price, taxes, hu_details, ...rest } = line;
-
+    const enrichedItem = itemMap[item?.ksin] || item;
     return {
       sto_number,
-      item: JSON.stringify(item),
+      item: JSON.stringify(enrichedItem),
       sto_quantity: JSON.stringify(sto_quantity),
       unit_price: JSON.stringify(unit_price),
       taxes: JSON.stringify(taxes),

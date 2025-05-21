@@ -15,7 +15,7 @@ autoscaling:
   targetMemoryUtilizationPercentage: 80
 
 image:
-  repository: us-docker.pkg.dev/kpn-platform-components/us.gcr.io/core-user-service
+  repository: us-docker.pkg.dev/kpn-platform-components/us.gcr.io/core-purchase-transfer
   tag: $IMAGE_TAG
   pullPolicy: IfNotPresent
   pullSecret:
@@ -40,7 +40,7 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
-  uriPrefix: /catalog/
+  uriPrefix: /purchase-transfer/
   hosts:
     - services-staging.kpnfarmfresh.com
     - services-staging.kpnfresh.com
@@ -91,7 +91,7 @@ gcp:
   enabled: false
 
 database:
-  enabled: false
+  enabled: true
 
 destinationPolicy:
   maxConnections: 6000

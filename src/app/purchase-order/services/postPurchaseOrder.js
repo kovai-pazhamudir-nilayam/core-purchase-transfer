@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const purchaseOrderRepo = require("../repository/purchaseOrder");
+const downstreamCallsRepo = require("../repository/downstreamCalls");
 const {
   transformForPurchaseOrder,
   transformForPurchaseOrderLines
@@ -12,6 +13,7 @@ function postPurchaseOrderService(fastify) {
     getPurcaseOrderByPoNumber,
     deletePurchaseOrderLines
   } = purchaseOrderRepo(fastify);
+  const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
@@ -34,13 +36,33 @@ function postPurchaseOrderService(fastify) {
       });
     }
 
+    const ksins = [
+      ...new Set(po_lines.map(line => line.item?.ksin).filter(Boolean))
+    ];
+    const ksinDetails = await getKsinDetails({
+      body: {
+        catalog_version: "ONLINE",
+        ksins,
+        include_media: true,
+        include_packlist: true
+      },
+      logTrace
+    });
+
+    const outletDetails = await getOutletBySiteId({
+      siteId: body.destination_site_id,
+      logTrace
+    });
+
     const purchaseOrderInput = transformForPurchaseOrder({
       purchaseOrderId,
-      body
+      body,
+      outletDetails
     });
     const purchaseOrderLinesInput = transformForPurchaseOrderLines({
       purchaseOrderId,
-      po_lines
+      po_lines,
+      ksinDetails
     });
 
     const knexTrx = await fastify.knex.transaction();

@@ -1,3 +1,5 @@
+const { transformCatalogDetail } = require("./catalogDetail");
+
 function transformForGrn({ body }) {
   const {
     supplier,
@@ -14,8 +16,10 @@ function transformForGrn({ body }) {
   };
   return response;
 }
-function transformForGrnLines({ body }) {
+function transformForGrnLines({ body, ksinDetails }) {
   const { grn_lines, grn_id, agn_number } = body;
+  const itemMap = transformCatalogDetail({ ksinDetails });
+
   return grn_lines.map(line => {
     const {
       item,
@@ -27,11 +31,11 @@ function transformForGrnLines({ body }) {
       lot_params,
       ...rest
     } = line;
-
+    const enrichedItem = itemMap[item?.ksin] || item;
     return {
       grn_id,
       agn_number,
-      item: JSON.stringify(item),
+      item: JSON.stringify(enrichedItem),
       grn_quantity: JSON.stringify(grn_quantity),
       mrp: JSON.stringify(mrp),
       lot_params: JSON.stringify(lot_params),

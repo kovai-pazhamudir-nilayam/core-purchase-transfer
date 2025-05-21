@@ -11,7 +11,7 @@ const postPurchaseOrder = {
       "po_number",
       "destination_site_id",
       "supplier",
-      "destination_address",
+      // "destination_address",
       "expected_delivery",
       "po_lines",
       // "created_at",

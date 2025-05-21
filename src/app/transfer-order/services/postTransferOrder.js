@@ -1,4 +1,5 @@
 const transferOrderRepo = require("../repository/transferOrder");
+const downstreamCallsRepo = require("../repository/downstreamCalls");
 const {
   transformForStoTransferOrder,
   transformForStoTransferOrderLines
@@ -11,6 +12,7 @@ function postTransferOrderService(fastify) {
     getTransferOrderByStoNumber,
     deleteStoTransferLines
   } = transferOrderRepo(fastify);
+  const { getKsinDetails } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
@@ -18,7 +20,7 @@ function postTransferOrderService(fastify) {
       logTrace
     });
 
-    const { sto_number } = body;
+    const { sto_number, sto_lines } = body;
     const existingStoOrder = await getTransferOrderByStoNumber.call(
       fastify.knex,
       {
@@ -34,11 +36,24 @@ function postTransferOrderService(fastify) {
       });
     }
 
+    const ksins = [
+      ...new Set(sto_lines.map(line => line.item?.ksin).filter(Boolean))
+    ];
+    const ksinDetails = await getKsinDetails({
+      body: {
+        catalog_version: "ONLINE",
+        ksins,
+        include_media: true,
+        include_packlist: true
+      },
+      logTrace
+    });
     const purchaseOrderInput = transformForStoTransferOrder({
       body
     });
     const purchaseOrderLinesInput = transformForStoTransferOrderLines({
-      body
+      body,
+      ksinDetails
     });
 
     const knexTrx = await fastify.knex.transaction();
