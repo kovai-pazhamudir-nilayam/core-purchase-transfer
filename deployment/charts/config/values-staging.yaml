@@ -86,6 +86,8 @@ environmentVariables:
   CORE_KPN_URI: https://kcloud.kovaipazhamudir.com/mobile
   CORE_KPN_IMAGE_BASE_URL: https://ibo.com
   AUTHN_SERVICE_URI: https://ibo.com
+  CATALOG_URI: https://services-staging.kpnfresh.com/catalog
+  CORE_NETWORK_SERVICE_URI: https://services-staging.kpnfarmfresh.com/network
 
 gcp:
   enabled: false
