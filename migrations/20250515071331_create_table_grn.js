@@ -11,7 +11,7 @@ exports.up = knex => {
             .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
 
-          table.uuid("grn_id").notNullable().unique(); // Unique business identifier
+          table.uuid("grn_id").notNullable().unique(); // Unique business identifier //TODO change to string
           table.string("agn_number").notNullable();
           table.string("destination_site_id");
           table.string("category_classification");

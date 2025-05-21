@@ -93,7 +93,7 @@ const postTransferOrder = {
     201: {
       type: "object",
       properties: {
-        sto_id: { type: "string", format: "uuid" }
+        sto_number: { type: "string" }
       }
     },
     ...errorSchemas
