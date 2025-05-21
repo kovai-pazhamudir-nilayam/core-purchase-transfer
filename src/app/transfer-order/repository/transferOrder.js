@@ -7,6 +7,7 @@ function purchaseOrderRepo(fastify) {
     const query = knex(TRANSFER_ORDER.NAME)
       .insert(input)
       .onConflict(TRANSFER_ORDER.COLUMNS.STO_NUMBER)
+      .merge()
       .returning("*");
 
     logQuery({

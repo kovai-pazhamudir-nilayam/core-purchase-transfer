@@ -315,12 +315,12 @@ const grnLineIteam = {
   $id: "request-grn-item",
   type: "object",
   required: [
-    "ksin",
-    "erp_title",
-    "legacy_id",
-    "primary_image_url",
-    "category_id",
-    "brand_id"
+    "ksin"
+    // "erp_title",
+    // "legacy_id",
+    // "primary_image_url",
+    // "category_id",
+    // "brand_id"
   ],
   properties: {
     ksin: { type: "string" },
@@ -336,12 +336,12 @@ const grnQuantity = {
   $id: "request-grn_quantity",
   type: "object",
   required: [
-    "good_quantity",
-    "bad_quantity",
-    "excess_quantity",
-    "shortage_quantity",
-    "free_quantity",
-    "quantity_uom"
+    // "good_quantity",
+    // "bad_quantity",
+    // "excess_quantity",
+    // "shortage_quantity",
+    // "free_quantity",
+    // "quantity_uom"
   ],
   additionalProperties: false,
   properties: {
@@ -391,12 +391,12 @@ const stoHuDetails = {
   type: "array",
   items: {
     type: "object",
-    required: ["hu_number", "hu_quantity"],
+    // required: ["hu_number", "hu_quantity"],
     properties: {
       hu_number: { type: "string" },
       hu_quantity: {
         type: "object",
-        required: ["quantity_number", "quantity_uom"],
+        // required: ["quantity_number", "quantity_uom"],
         properties: {
           quantity_number: { type: "string" },
           quantity_uom: { type: "string" }
