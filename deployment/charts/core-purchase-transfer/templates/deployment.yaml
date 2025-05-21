@@ -30,6 +30,7 @@ spec:
         sidecar.istio.io/proxyMemoryLimit: 650Mi
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      serviceAccountName: kpn-bff-services
       {{- if .Values.image.pullSecret.enabled }}
       imagePullSecrets:
       - name: artifact-registry-auth
