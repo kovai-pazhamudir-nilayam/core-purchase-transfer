@@ -37,7 +37,7 @@ const postCreateGrn = {
         items: {
           type: "object",
           required: [
-            "grn_line_id",
+            // "grn_line_id",
             "agn_line_id",
             "item",
             "grn_quantity",
@@ -49,7 +49,7 @@ const postCreateGrn = {
           ],
           additionalProperties: false,
           properties: {
-            grn_line_id: { type: "string", format: "uuid" },
+            // grn_line_id: { type: "string", format: "uuid" },
             agn_line_id: { type: "string" },
             item: { $ref: "request-grn-item#" },
             grn_quantity: {

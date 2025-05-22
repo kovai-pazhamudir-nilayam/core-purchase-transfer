@@ -36,17 +36,18 @@ const postTransferOrder = {
         items: {
           type: "object",
           required: [
-            "sto_line_id",
             "item",
             "sto_quantity",
             "unit_price",
+            "cess_rate",
+            "cess_amount",
+            "gst_rate",
             "tax_included_in_price",
             "tax_code",
-            "taxes",
+            // "taxes",
             "approved_margin_pct"
           ],
           properties: {
-            sto_line_id: { type: "string", format: "uuid" },
             item: { $ref: "request-po-item#" },
             sto_quantity: { $ref: "request-st-quantity#" },
             unit_price: {

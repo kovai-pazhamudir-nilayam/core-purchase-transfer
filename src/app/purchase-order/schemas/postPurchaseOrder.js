@@ -59,7 +59,6 @@ const postPurchaseOrder = {
             "approved_margin_pct"
           ],
           properties: {
-            po_line_id: { type: "string", format: "uuid" },
             item: { $ref: "request-po-item#" },
             po_quantity: { $ref: "request-po-quantity#" },
             mrp: { $ref: "request-amount#" },

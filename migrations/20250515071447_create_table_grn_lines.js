@@ -6,21 +6,21 @@ exports.up = knex => {
       if (!exists) {
         return knex.schema.createTable("grn_line", table => {
           table
-            .uuid("id")
+            .uuid("grn_line_id")
             .notNullable()
             .primary()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-
-          table.uuid("grn_line_id").notNullable();
-          table.uuid("grn_id").notNullable(); // FK to grn.grn_id
+          table.string("grn_id").notNullable(); // FK to grn.grn_id
           table
             .foreign("grn_id")
             .references("grn_id")
             .inTable("grn")
             .onDelete("CASCADE");
-
           table.string("agn_line_id");
           table.string("agn_number");
+          table.string("cess_rate");
+          table.string("cess_amount");
+          table.string("gst_rate");
           table.jsonb("item");
           table.jsonb("grn_quantity");
           table.jsonb("mrp");
@@ -30,9 +30,8 @@ exports.up = knex => {
           table.string("tax_code");
           table.jsonb("taxes");
           table.jsonb("lot_params");
-          table.integer("approved_margin_pct");
-          table.integer("realised_margin_pct");
-
+          table.float("approved_margin_pct");
+          table.float("realised_margin_pct");
           table.timestamp("created_at").defaultTo(knex.fn.now());
           table.string("created_by");
           table.timestamp("updated_at", { useTz: true });

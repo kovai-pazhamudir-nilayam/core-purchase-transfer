@@ -10,7 +10,6 @@ exports.up = knex => {
             .primary()
             .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-
           table.string("sto_number").notNullable().unique();
           table.string("sto_type");
           table.string("sto_reason");

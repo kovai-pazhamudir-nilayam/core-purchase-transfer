@@ -6,28 +6,27 @@ exports.up = knex => {
       if (!exists) {
         return knex.schema.createTable("transfer_order_line", table => {
           table
-            .uuid("id")
+            .uuid("sto_line_id")
             .notNullable()
             .primary()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-
-          table.uuid("sto_line_id");
           table.string("sto_number").notNullable(); // foreign key column
           table
             .foreign("sto_number")
             .references("sto_number")
             .inTable("transfer_order")
             .onDelete("CASCADE");
-
           table.jsonb("item");
           table.jsonb("sto_quantity");
           table.jsonb("unit_price");
           table.boolean("tax_included_in_price");
+          table.string("cess_rate");
+          table.string("cess_amount");
+          table.string("gst_rate");
           table.string("tax_code");
           table.jsonb("taxes");
           table.jsonb("hu_details");
-          table.integer("approved_margin_pct");
-
+          table.float("approved_margin_pct");
           table.timestamp("created_at").defaultTo(knex.fn.now());
           table.string("created_by");
           table.timestamp("updated_at", { useTz: true });

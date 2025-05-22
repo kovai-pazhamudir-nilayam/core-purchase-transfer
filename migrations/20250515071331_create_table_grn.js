@@ -11,14 +11,13 @@ exports.up = knex => {
             .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
 
-          table.uuid("grn_id").notNullable().unique(); // Unique business identifier //TODO change to string
+          table.string("grn_id").notNullable();
           table.string("agn_number").notNullable();
           table.string("destination_site_id");
           table.string("category_classification");
           table.string("source_document_type");
           table.string("source_document_number");
           table.timestamp("source_document_date", { useTz: true });
-
           table.jsonb("supplier");
           table.jsonb("supplier_invoice");
           table.jsonb("invoice_adjustments");
