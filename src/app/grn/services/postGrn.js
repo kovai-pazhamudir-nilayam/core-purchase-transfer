@@ -24,6 +24,10 @@ function postGrnService(fastify) {
     });
 
     if (existingGrn) {
+      fastify.log.info({
+        message: "Grn already exists, deleting existing lines",
+        logTrace
+      });
       await deleteGrnLines.call(fastify.knex, {
         grn_id,
         logTrace
