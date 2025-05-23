@@ -80,7 +80,7 @@ const postTransferOrder = {
                 }
               }
             },
-            hu_details: { $ref: "request-hu-details#" },
+            // hu_details: { $ref: "request-hu-details#" },
             approved_margin_pct: { type: "number" }
           }
         }
