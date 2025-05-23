@@ -17,7 +17,7 @@ function transformForGrn({ body }) {
   return response;
 }
 function transformForGrnLines({ body, ksinDetails, outletDetails }) {
-  const { grn_lines, grn_id, agn_number, source_document } = body;
+  const { grn_lines, grn_id, agn_number, supplier } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
   return grn_lines.map(line => {
@@ -47,7 +47,9 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
     // const sourceOutlet = outletMap[source_site_id];
     // const destinationOutlet = outletMap[destination_site_id];
 
-    if (source_document.state_code !== outletDetails.address.state_code) {
+    if (
+      supplier.supplier_document.state_code !== outletDetails.address.state_code
+    ) {
       taxes.push({
         tax_code: "IGST",
         tax_rate: gst_rate,
