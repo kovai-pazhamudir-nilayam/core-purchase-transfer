@@ -9,7 +9,7 @@ function postGrnService(fastify) {
     getGrnByIdNumber,
     deleteGrnLines
   } = purchaseOrderRepo(fastify);
-  const { getKsinDetails } = downstreamCallsRepo(fastify);
+  const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
@@ -17,7 +17,7 @@ function postGrnService(fastify) {
       logTrace
     });
 
-    const { grn_id, grn_lines } = body;
+    const { grn_id, grn_lines, destination_site_id } = body;
     const existingGrn = await getGrnByIdNumber.call(fastify.knex, {
       grn_id,
       logTrace
@@ -42,13 +42,21 @@ function postGrnService(fastify) {
       },
       logTrace
     });
+    const outletDetails = await getOutletBySiteId({
+      siteId: destination_site_id,
+      logTrace
+    });
+    // const outletMap = new Map(
+    //   outletDetails.map(item => [item.outlet_id, item])
+    // );
 
     const purchaseOrderInput = transformForGrn({
       body
     });
     const purchaseOrderLinesInput = transformForGrnLines({
       body,
-      ksinDetails
+      ksinDetails,
+      outletDetails
     });
 
     const knexTrx = await fastify.knex.transaction();

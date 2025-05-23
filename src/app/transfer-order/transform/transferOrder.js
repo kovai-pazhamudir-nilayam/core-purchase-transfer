@@ -17,13 +17,58 @@ function transformForStoTransferOrder({ body }) {
   };
   return response;
 }
-function transformForStoTransferOrderLines({ body, ksinDetails }) {
-  const { sto_lines, sto_number } = body;
+function transformForStoTransferOrderLines({
+  body,
+  ksinDetails,
+  outletDetails
+}) {
+  const { sto_lines, source_document, sto_number } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
   return sto_lines.map(line => {
-    const { item, sto_quantity, unit_price, taxes, hu_details, ...rest } = line;
+    const {
+      item,
+      cess_amount,
+      cess_rate,
+      gst_rate,
+      gst_amount,
+      sto_quantity,
+      unit_price,
+      hu_details,
+      ...rest
+    } = line;
     const enrichedItem = itemMap[item?.ksin] || item;
+    const taxes = [];
+    if (cess_amount && cess_rate) {
+      taxes.push({
+        tax_code: "CESS",
+        tax_rate: cess_rate,
+        tax_amount: cess_amount
+      });
+    }
+
+    // const sourceOutlet = outletMap[source_site_id];
+    // const destinationOutlet = outletMap[destination_site_id];
+
+    if (source_document.state_code !== outletDetails.address.state_code) {
+      taxes.push({
+        tax_code: "IGST",
+        tax_rate: gst_rate,
+        tax_amount: gst_amount
+      });
+    } else {
+      taxes.push({
+        tax_code: "CGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+      taxes.push({
+        tax_code: "SGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+    }
+
     return {
       sto_number,
       item: JSON.stringify(enrichedItem),

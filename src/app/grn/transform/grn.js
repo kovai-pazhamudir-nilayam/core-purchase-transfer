@@ -16,8 +16,8 @@ function transformForGrn({ body }) {
   };
   return response;
 }
-function transformForGrnLines({ body, ksinDetails }) {
-  const { grn_lines, grn_id, agn_number } = body;
+function transformForGrnLines({ body, ksinDetails, outletDetails }) {
+  const { grn_lines, grn_id, agn_number, source_document } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
   return grn_lines.map(line => {
@@ -27,11 +27,44 @@ function transformForGrnLines({ body, ksinDetails }) {
       mrp,
       discount,
       unit_price,
-      taxes,
+      cess_amount,
+      cess_rate,
+      gst_rate,
+      gst_amount,
       lot_params,
       ...rest
     } = line;
     const enrichedItem = itemMap[item?.ksin] || item;
+    const taxes = [];
+    if (cess_amount && cess_rate) {
+      taxes.push({
+        tax_code: "CESS",
+        tax_rate: cess_rate,
+        tax_amount: cess_amount
+      });
+    }
+
+    // const sourceOutlet = outletMap[source_site_id];
+    // const destinationOutlet = outletMap[destination_site_id];
+
+    if (source_document.state_code !== outletDetails.address.state_code) {
+      taxes.push({
+        tax_code: "IGST",
+        tax_rate: gst_rate,
+        tax_amount: gst_amount
+      });
+    } else {
+      taxes.push({
+        tax_code: "CGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+      taxes.push({
+        tax_code: "SGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+    }
     return {
       grn_id,
       agn_number,

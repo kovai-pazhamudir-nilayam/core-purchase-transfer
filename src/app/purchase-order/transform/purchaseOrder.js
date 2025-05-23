@@ -24,9 +24,11 @@ function transformForPurchaseOrder({ purchaseOrderId, body, outletDetails }) {
   return response;
 }
 function transformForPurchaseOrderLines({
+  body,
   purchaseOrderId,
   po_lines,
-  ksinDetails
+  ksinDetails,
+  outletDetails
 }) {
   const itemMap = transformCatalogDetail({ ksinDetails });
   return po_lines.map(line => {
@@ -37,10 +39,40 @@ function transformForPurchaseOrderLines({
       tot,
       discount,
       unit_price,
-      taxes,
+      cess_amount,
+      cess_rate,
+      gst_rate,
+      gst_amount,
       ...rest
     } = line;
     const enrichedItem = itemMap[item?.ksin] || item;
+    const taxes = [];
+    if (cess_amount && cess_rate) {
+      taxes.push({
+        tax_code: "CESS",
+        tax_rate: cess_rate,
+        tax_amount: cess_amount
+      });
+    }
+
+    if (outletDetails.address.state_code !== body.supplier_address.state_code) {
+      taxes.push({
+        tax_code: "IGST",
+        tax_rate: gst_rate,
+        tax_amount: gst_amount
+      });
+    } else {
+      taxes.push({
+        tax_code: "CGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+      taxes.push({
+        tax_code: "SGST",
+        tax_rate: gst_rate / 2,
+        tax_amount: gst_amount / 2
+      });
+    }
     return {
       purchase_order_id: purchaseOrderId,
       item: JSON.stringify(enrichedItem),

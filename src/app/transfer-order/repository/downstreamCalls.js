@@ -27,6 +27,31 @@ function downstreamCallsRepo(fastify) {
     }
   }
 
+  async function getMultipleOutletsByOutletIds({ outlets, logTrace }) {
+    const authToken = await getAuthToken("PLATFORM");
+    try {
+      const outletIds = outlets.join(",");
+      const response = await fastify.request({
+        url: `${process.env.CORE_NETWORK_SERVICE_URI}/v1/outlets?outlet_ids=${outletIds}`,
+        path: "/network/v1/outlets",
+        method: "GET",
+        headers: {
+          authorization: authToken,
+          "x-channel-id": "WEB",
+          ...logTrace
+        },
+        downstream_system: "core-network",
+        source_system: "core-purchase-transfer",
+        domain: "purchase-transfer",
+        functionality: "Get Outlet By Outlet Ids"
+      });
+
+      return response;
+    } catch (err) {
+      return [];
+    }
+  }
+
   async function getKsinDetails({ logTrace, body }) {
     const authToken = await getAuthToken("PLATFORM");
     const response = await fastify.request({
@@ -47,6 +72,7 @@ function downstreamCallsRepo(fastify) {
 
   return {
     getOutletBySiteId,
+    getMultipleOutletsByOutletIds,
     getKsinDetails
   };
 }

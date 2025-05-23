@@ -12,7 +12,7 @@ function postTransferOrderService(fastify) {
     getTransferOrderByStoNumber,
     deleteStoTransferLines
   } = transferOrderRepo(fastify);
-  const { getKsinDetails } = downstreamCallsRepo(fastify);
+  const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
     fastify.log.info({
@@ -20,7 +20,7 @@ function postTransferOrderService(fastify) {
       logTrace
     });
 
-    const { sto_number, sto_lines } = body;
+    const { sto_number, sto_lines, destination_site_id } = body;
     const existingStoOrder = await getTransferOrderByStoNumber.call(
       fastify.knex,
       {
@@ -48,12 +48,20 @@ function postTransferOrderService(fastify) {
       },
       logTrace
     });
+    const outletDetails = await getOutletBySiteId({
+      siteId: destination_site_id,
+      logTrace
+    });
+    // const outletMap = new Map(
+    //   outletDetails.map(item => [item.outlet_id, item])
+    // );
     const purchaseOrderInput = transformForStoTransferOrder({
       body
     });
     const purchaseOrderLinesInput = transformForStoTransferOrderLines({
       body,
-      ksinDetails
+      ksinDetails,
+      outletDetails
     });
 
     const knexTrx = await fastify.knex.transaction();

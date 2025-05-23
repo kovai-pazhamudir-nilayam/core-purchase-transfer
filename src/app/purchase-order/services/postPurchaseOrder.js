@@ -60,9 +60,11 @@ function postPurchaseOrderService(fastify) {
       outletDetails
     });
     const purchaseOrderLinesInput = transformForPurchaseOrderLines({
+      body,
       purchaseOrderId,
       po_lines,
-      ksinDetails
+      ksinDetails,
+      outletDetails
     });
 
     const knexTrx = await fastify.knex.transaction();
