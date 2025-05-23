@@ -67,11 +67,15 @@ const postPurchaseOrder = {
             po_quantity: { $ref: "request-po-quantity#" },
             mrp: { $ref: "request-amount#" },
             tot: { $ref: "request-tot#" },
+            cess_rate: { type: "number" },
+            cess_amount: { type: "number" },
+            gst_rate: { type: "number" },
+            gst_amount: { type: "number" },
             discount: { $ref: "request-discount#" },
             unit_price: { $ref: "request-amount#" },
             tax_included_in_price: { type: "boolean" },
             tax_code: { type: "string" },
-            taxes: { $ref: "request-taxes#" },
+            // taxes: { $ref: "request-taxes#" },
             approved_margin_pct: { type: "number" }
           }
         }

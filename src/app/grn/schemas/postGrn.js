@@ -64,6 +64,11 @@ const postCreateGrn = {
             discount: { $ref: "request-discount#" },
             tax_included_in_price: { type: "boolean" },
             tax_code: { type: "string" },
+            cess_rate: { type: "number" },
+            cess_amount: { type: "number" },
+            gst_rate: { type: "number" },
+            gst_amount: { type: "number" },
+
             // taxes: { $ref: "request-taxes#" },
             lot_params: {
               type: "array",
@@ -90,8 +95,8 @@ const postCreateGrn = {
             properties: {
               freight_charges_amount: { $ref: "request-amount#" },
               tax_included_in_price: { type: "boolean" },
-              tax_code: { type: "string" },
-              taxes: { $ref: "request-taxes#" }
+              tax_code: { type: "string" }
+              // taxes: { $ref: "request-taxes#" }
             }
           },
           tcs_amount: { $ref: "request-amount#" },

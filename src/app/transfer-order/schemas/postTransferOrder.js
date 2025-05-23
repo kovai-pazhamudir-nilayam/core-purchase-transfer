@@ -42,6 +42,7 @@ const postTransferOrder = {
             "cess_rate",
             "cess_amount",
             "gst_rate",
+            "gst_amount",
             "tax_included_in_price",
             "tax_code",
             // "taxes",
@@ -50,6 +51,10 @@ const postTransferOrder = {
           properties: {
             item: { $ref: "request-po-item#" },
             sto_quantity: { $ref: "request-st-quantity#" },
+            cess_rate: { type: "number" },
+            cess_amount: { type: "number" },
+            gst_rate: { type: "number" },
+            gst_amount: { type: "number" },
             unit_price: {
               $ref: "request-amount#"
             },
