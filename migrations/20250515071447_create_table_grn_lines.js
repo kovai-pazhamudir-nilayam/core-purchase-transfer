@@ -7,10 +7,10 @@ exports.up = knex => {
         return knex.schema.createTable("grn_line", table => {
           table
             .uuid("grn_line_id")
-            .notNullable()
             .primary()
+            .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-          table.string("grn_id").notNullable(); // FK to grn.grn_id
+          table.string("grn_id").notNullable();
           table
             .foreign("grn_id")
             .references("grn_id")

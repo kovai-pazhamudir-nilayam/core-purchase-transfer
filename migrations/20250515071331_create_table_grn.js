@@ -10,7 +10,6 @@ exports.up = knex => {
             .primary()
             .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-
           table.string("grn_id").notNullable();
           table.string("agn_number").notNullable();
           table.string("destination_site_id");

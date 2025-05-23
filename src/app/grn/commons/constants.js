@@ -24,7 +24,6 @@ const GRN = {
 const GRN_LINE = {
   NAME: "grn_line",
   COLUMNS: {
-    ID: "id",
     GRN_LINE_ID: "grn_line_id",
     GRN_ID: "grn_id",
     AGN_LINE_ID: "agn_line_id",
