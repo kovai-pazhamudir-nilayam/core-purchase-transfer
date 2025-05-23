@@ -167,8 +167,8 @@ const taxSchema = {
         // required: ["currency", "cent_amount", "fraction"],
         properties: {
           currency: { type: "string" },
-          cent_amount: { type: "string" },
-          fraction: { type: "string" }
+          cent_amount: { type: "integer" },
+          fraction: { type: "integer" }
         }
       }
     }
@@ -412,8 +412,8 @@ const stoAmount = {
   required: ["currency", "cent_amount", "fraction"],
   properties: {
     currency: { type: "string" },
-    cent_amount: { type: "string" },
-    fraction: { type: "string" }
+    cent_amount: { type: "integer" },
+    fraction: { type: "integer" }
   }
 };
 

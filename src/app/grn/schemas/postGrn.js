@@ -38,19 +38,23 @@ const postCreateGrn = {
           type: "object",
           required: [
             // "grn_line_id",
-            "agn_line_id",
+            // "agn_line_id",
             "item",
+            "cess_rate",
+            "cess_amount",
+            "gst_rate",
+            "gst_amount",
             "grn_quantity",
             "mrp",
             "unit_price",
             "tax_included_in_price",
-            "tax_code",
-            "taxes"
+            "tax_code"
+            // "taxes"
           ],
           additionalProperties: false,
           properties: {
             // grn_line_id: { type: "string", format: "uuid" },
-            agn_line_id: { type: "string" },
+            // agn_line_id: { type: "string" },
             item: { $ref: "request-grn-item#" },
             grn_quantity: {
               $ref: "request-grn_quantity"
@@ -60,7 +64,7 @@ const postCreateGrn = {
             discount: { $ref: "request-discount#" },
             tax_included_in_price: { type: "boolean" },
             tax_code: { type: "string" },
-            taxes: { $ref: "request-taxes#" },
+            // taxes: { $ref: "request-taxes#" },
             lot_params: {
               type: "array",
               items: {

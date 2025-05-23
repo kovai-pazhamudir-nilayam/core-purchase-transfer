@@ -12,7 +12,7 @@ const postTransferOrder = {
       "source_site_id",
       "source_document",
       "destination_site_id",
-      "destination_document",
+      // "destination_document",
       "sto_date",
       "sto_amount",
       "sto_lines"
@@ -28,7 +28,7 @@ const postTransferOrder = {
       source_site_id: { type: "string" },
       source_document: { $ref: "request-source-document#" },
       destination_site_id: { type: "string" },
-      destination_document: { $ref: "request-destination-document#" },
+      // destination_document: { $ref: "request-destination-document#" },
       sto_date: { type: "string", format: "date-time" },
       sto_amount: { $ref: "request-sto-amount#" },
       sto_lines: {

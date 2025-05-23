@@ -55,7 +55,10 @@ function transformForPurchaseOrderLines({
       });
     }
 
-    if (outletDetails.address.state_code !== body.supplier_address.state_code) {
+    if (
+      outletDetails.address.state_code !==
+      body.supplier.supplier_document.state_code
+    ) {
       taxes.push({
         tax_code: "IGST",
         tax_rate: gst_rate,
