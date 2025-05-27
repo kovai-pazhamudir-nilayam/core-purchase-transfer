@@ -25,7 +25,7 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(PURCHASE_LINE.NAME)
       .insert(input)
-      .onConflict(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_LINE_ID) // ['purchase_order_id', 'po_line_id']
+      .onConflict(PURCHASE_LINE.COLUMNS.PO_LINE_ID) // ['purchase_order_id', 'po_line_id']
       .merge()
       .returning("*");
 
