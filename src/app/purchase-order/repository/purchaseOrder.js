@@ -132,10 +132,7 @@ function purchaseOrderRepo(fastify) {
 
     const knex = this;
     const query = knex(PURCHASE_LINE.NAME)
-      .where(
-        PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_ID,
-        "3f14296a-7a3a-46f1-8cac-cbe3ec3807e7"
-      )
+      .whereIn(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_ID, purchase_order_id)
       .returning("*");
 
     const response = await query;
