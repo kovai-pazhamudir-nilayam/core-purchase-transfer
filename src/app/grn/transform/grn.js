@@ -82,4 +82,16 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
   });
 }
 
-module.exports = { transformForGrn, transformForGrnLines };
+function transformFetchGrnResponse({ grnResponse, grnLineResponse }) {
+  const result = grnResponse.map(item => ({
+    ...item,
+    grn_lines: grnLineResponse
+  }));
+  return result;
+}
+
+module.exports = {
+  transformForGrn,
+  transformForGrnLines,
+  transformFetchGrnResponse
+};

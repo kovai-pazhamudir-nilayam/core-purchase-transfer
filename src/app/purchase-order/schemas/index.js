@@ -1,6 +1,7 @@
 const postPurchaseOrder = require("./postPurchaseOrder");
-// const postAddUser = require("./addUser");
+const postFetchPurchaseOrder = require("./postFetchPurchaseOrder");
 
 module.exports = {
-  postPurchaseOrder
+  postPurchaseOrder,
+  postFetchPurchaseOrder
 };

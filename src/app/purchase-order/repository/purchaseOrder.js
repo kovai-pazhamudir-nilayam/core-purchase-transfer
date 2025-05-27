@@ -25,7 +25,7 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(PURCHASE_LINE.NAME)
       .insert(input)
-      .onConflict(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_LINE_ID) // ['purchase_order_id', 'po_line_id']
+      .onConflict(PURCHASE_LINE.COLUMNS.PO_LINE_ID) // ['purchase_order_id', 'po_line_id']
       .merge()
       .returning("*");
 
@@ -101,12 +101,55 @@ function purchaseOrderRepo(fastify) {
     return response;
   }
 
+  async function fetchPurchaseOrderByFilters({ condition, logTrace }) {
+    fastify.log.info({
+      message: "Fetch Purcase Order",
+      logTrace
+    });
+    const knex = this;
+    const query = knex(PURCHASE_ORDER.NAME).returning("*");
+
+    if (condition.po_number) {
+      query.where("po_number", condition.po_number);
+    }
+    if (condition.grn_restrictions) {
+      query.where("grn_restrictions", condition.grn_restrictions);
+    }
+    if (condition.destination_site_id) {
+      query.where("destination_site_id", condition.destination_site_id);
+    }
+
+    const response = await query;
+    return response;
+  }
+
+  async function fetchPurchaseOrderLine({ purchase_order_id, logTrace }) {
+    fastify.log.info({
+      message: "Fetch Purchase Order Line",
+      logTrace,
+      purchase_order_id
+    });
+
+    const knex = this;
+    const query = knex(PURCHASE_LINE.NAME)
+      .where(
+        PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_ID,
+        "3f14296a-7a3a-46f1-8cac-cbe3ec3807e7"
+      )
+      .returning("*");
+
+    const response = await query;
+    return response;
+  }
+
   return {
     upsertOrder,
     fetchOrderWithLines,
     upsertPurchaseOrderLines,
     getPurcaseOrderByPoNumber,
-    deletePurchaseOrderLines
+    deletePurchaseOrderLines,
+    fetchPurchaseOrderByFilters,
+    fetchPurchaseOrderLine
   };
 }
 

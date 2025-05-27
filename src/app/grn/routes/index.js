@@ -8,4 +8,11 @@ module.exports = async fastify => {
     schema: schemas.postGrn,
     handler: handlers.postGrn(fastify)
   });
+
+  fastify.route({
+    method: "POST",
+    url: "/fetch",
+    schema: schemas.postFetchGrn,
+    handler: handlers.postFetchGrn(fastify)
+  });
 };

@@ -90,4 +90,19 @@ function transformForPurchaseOrderLines({
   });
 }
 
-module.exports = { transformForPurchaseOrder, transformForPurchaseOrderLines };
+function transformFetchPurchaseOrderResponse({
+  purchaseOrderResponse,
+  purchaseOrderLineResponse
+}) {
+  const result = purchaseOrderResponse.map(item => ({
+    ...item,
+    po_lines: purchaseOrderLineResponse
+  }));
+  return result;
+}
+
+module.exports = {
+  transformForPurchaseOrder,
+  transformForPurchaseOrderLines,
+  transformFetchPurchaseOrderResponse
+};
