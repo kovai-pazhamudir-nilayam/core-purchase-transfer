@@ -139,6 +139,70 @@ function purchaseOrderRepo(fastify) {
     return response;
   }
 
+  async function getPurchaseOrderWithLinesByPoNumber({
+    condition = {},
+    logTrace
+  }) {
+    const knex = this;
+
+    const query = knex("purchase_order as po")
+      .join(
+        "purchase_order_line as pol",
+        "po.purchase_order_id",
+        "pol.purchase_order_id"
+      )
+      .select([
+        "po.purchase_order_id",
+        "po.po_number",
+        "po.destination_site_id",
+        "po.vendor_id",
+        "po.supplier_document",
+        "po.supplier_address",
+        "po.destination_address",
+        "po.expected_delivery",
+        "po.category_classification",
+        "po.po_email_ids",
+        "po.grn_restrictions",
+        "po.created_at as po_created_at",
+        "po.created_by",
+        "po.po_expiry_date",
+        "po.approved_at",
+        "po.approved_by",
+
+        "pol.po_line_id",
+        "pol.item",
+        "pol.po_quantity",
+        "pol.mrp",
+        "pol.tot",
+        "pol.discount",
+        "pol.unit_price",
+        "pol.tax_included_in_price",
+        "pol.cess_rate",
+        "pol.cess_amount",
+        "pol.gst_rate",
+        "pol.tax_code",
+        "pol.taxes",
+        "pol.approved_margin_pct",
+        "pol.created_at as pol_created_at",
+        "pol.updated_at as pol_updated_at",
+        "pol.purchase_order_id as pol_purchase_order_id"
+      ]);
+
+    if (condition.po_number) {
+      query.where("po.po_number", condition.po_number);
+    }
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "Fetch PO with lines (structured)",
+      logTrace
+    });
+
+    const response = await query;
+    return response;
+  }
+
   return {
     upsertOrder,
     fetchOrderWithLines,
@@ -146,7 +210,8 @@ function purchaseOrderRepo(fastify) {
     getPurcaseOrderByPoNumber,
     deletePurchaseOrderLines,
     fetchPurchaseOrderByFilters,
-    fetchPurchaseOrderLine
+    fetchPurchaseOrderLine,
+    getPurchaseOrderWithLinesByPoNumber
   };
 }
 

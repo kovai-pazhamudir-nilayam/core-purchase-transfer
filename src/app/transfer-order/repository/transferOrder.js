@@ -25,7 +25,7 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(TRANSFER_ORDER_LINE.NAME)
       .insert(input)
-      .onConflict(TRANSFER_ORDER_LINE.COLUMNS.ID)
+      .onConflict(TRANSFER_ORDER_LINE.COLUMNS.STO_LINE_ID)
       .merge();
 
     logQuery({
@@ -71,11 +71,61 @@ function purchaseOrderRepo(fastify) {
     return response;
   }
 
+  async function getTransferOrderWithLinesByStoNumber({ condition, logTrace }) {
+    const knex = this;
+
+    const query = knex("transfer_order as t")
+      .join("transfer_order_line as tol", "t.sto_number", "tol.sto_number")
+      .select([
+        "t.id",
+        "t.sto_number",
+        "t.sto_type",
+        "t.sto_reason",
+        "t.source_site_id",
+        "t.source_document",
+        "t.sto_date",
+        "t.sto_amount",
+        "t.created_at as t_created_at",
+        "t.created_by as t_created_by",
+        "t.updated_at as t_updated_at",
+        "t.updated_by as t_updated_by",
+
+        "tol.sto_line_id",
+        "tol.item",
+        "tol.sto_quantity",
+        "tol.unit_price",
+        "tol.tax_included_in_price",
+        "tol.cess_rate",
+        "tol.cess_amount",
+        "tol.gst_rate",
+        "tol.tax_code",
+        "tol.taxes",
+        "tol.hu_details",
+        "tol.approved_margin_pct",
+        "tol.created_at as tol_created_at",
+        "tol.created_by as tol_created_by",
+        "tol.updated_by as tol_updated_by",
+        "tol.updated_at as tol_updated_at"
+      ])
+      .where("t.sto_number", condition.sto_number);
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "Fetch Transfer Order and Lines by sto_number",
+      logTrace
+    });
+
+    const response = await query;
+    return response;
+  }
+
   return {
     upsertTransferOrder,
     upsertTransferOrderLines,
     getTransferOrderByStoNumber,
-    deleteStoTransferLines
+    deleteStoTransferLines,
+    getTransferOrderWithLinesByStoNumber
   };
 }
 

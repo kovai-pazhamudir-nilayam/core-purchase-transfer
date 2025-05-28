@@ -1,7 +1,7 @@
 const { errorSchemas } = require("../../commons/schemas/errorSchemas");
 
 const postTransferOrder = {
-  tags: ["Transfer Order"],
+  tags: ["TRANSFER ORDER"],
   summary: "This API is to create a Stock Transfer Order (STO)",
   headers: { $ref: "request-headers#" },
   body: {

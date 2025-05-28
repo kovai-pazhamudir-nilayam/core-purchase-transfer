@@ -80,8 +80,56 @@ function transformForStoTransferOrderLines({
     };
   });
 }
+function transformFetchTransferOrderResponse({ response }) {
+  const transferOrderMap = new Map();
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const row of response) {
+    const stoNumber = row.sto_number;
+
+    if (!transferOrderMap.has(stoNumber)) {
+      transferOrderMap.set(stoNumber, {
+        id: row.id,
+        sto_number: row.sto_number,
+        sto_type: row.sto_type,
+        sto_reason: row.sto_reason,
+        source_site_id: row.source_site_id,
+        source_document: row.source_document,
+        sto_date: row.sto_date,
+        sto_amount: row.sto_amount,
+        created_at: row.t_created_at,
+        created_by: row.t_created_by,
+        updated_at: row.t_updated_at,
+        updated_by: row.t_updated_by,
+        transfer_order_line: []
+      });
+    }
+
+    transferOrderMap.get(stoNumber).transfer_order_line.push({
+      sto_line_id: row.sto_line_id,
+      item: row.item,
+      sto_quantity: row.sto_quantity,
+      unit_price: row.unit_price,
+      tax_included_in_price: row.tax_included_in_price,
+      cess_rate: row.cess_rate,
+      cess_amount: row.cess_amount,
+      gst_rate: row.gst_rate,
+      tax_code: row.tax_code,
+      taxes: row.taxes,
+      hu_details: row.hu_details,
+      approved_margin_pct: row.approved_margin_pct,
+      created_at: row.tol_created_at,
+      created_by: row.tol_created_by,
+      updated_by: row.tol_updated_by,
+      updated_at: row.tol_updated_at
+    });
+  }
+
+  return Array.from(transferOrderMap.values());
+}
 
 module.exports = {
   transformForStoTransferOrder,
-  transformForStoTransferOrderLines
+  transformForStoTransferOrderLines,
+  transformFetchTransferOrderResponse
 };

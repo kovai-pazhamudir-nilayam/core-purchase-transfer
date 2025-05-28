@@ -90,15 +90,65 @@ function transformForPurchaseOrderLines({
   });
 }
 
-function transformFetchPurchaseOrderResponse({
-  purchaseOrderResponse,
-  purchaseOrderLineResponse
-}) {
-  const result = purchaseOrderResponse.map(item => ({
-    ...item,
-    po_lines: purchaseOrderLineResponse
+function transformFetchPurchaseOrderResponse({ response }) {
+  const {
+    purchase_order_id,
+    po_number,
+    destination_site_id,
+    vendor_id,
+    supplier_document,
+    supplier_address,
+    destination_address,
+    expected_delivery,
+    category_classification,
+    po_email_ids,
+    grn_restrictions,
+    po_created_at,
+    created_by,
+    po_expiry_date,
+    approved_at,
+    approved_by
+  } = response[0];
+
+  const purchaseOrderLines = response.map(row => ({
+    po_line_id: row.po_line_id,
+    item: row.item,
+    po_quantity: row.po_quantity,
+    mrp: row.mrp,
+    tot: row.tot,
+    discount: row.discount,
+    unit_price: row.unit_price,
+    tax_included_in_price: row.tax_included_in_price,
+    cess_rate: row.cess_rate,
+    cess_amount: row.cess_amount,
+    gst_rate: row.gst_rate,
+    tax_code: row.tax_code,
+    taxes: row.taxes,
+    approved_margin_pct: row.approved_margin_pct,
+    created_at: row.pol_created_at,
+    updated_at: row.pol_updated_at,
+    purchase_order_id: row.pol_purchase_order_id
   }));
-  return result;
+
+  return {
+    purchase_order_id,
+    po_number,
+    destination_site_id,
+    vendor_id,
+    supplier_document,
+    supplier_address,
+    destination_address,
+    expected_delivery,
+    category_classification,
+    po_email_ids,
+    grn_restrictions,
+    created_at: po_created_at,
+    created_by,
+    po_expiry_date,
+    approved_at,
+    approved_by,
+    purchase_order_lines: purchaseOrderLines
+  };
 }
 
 module.exports = {
