@@ -25,9 +25,9 @@ exports.up = knex => {
           table.float("approved_margin_pct");
           table.timestamp("created_at").defaultTo(knex.fn.now());
           table.timestamp("updated_at").defaultTo(knex.fn.now());
-          table.uuid("purchase_order_id"); // foreign key column
           table
-            .foreign("purchase_order_id")
+            .uuid("purchase_order_id")
+            .notNullable()
             .references("purchase_order_id")
             .inTable("purchase_order")
             .onDelete("CASCADE");

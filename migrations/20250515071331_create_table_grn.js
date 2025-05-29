@@ -14,6 +14,7 @@ exports.up = knex => {
           table.string("agn_number").notNullable();
           table.string("destination_site_id");
           table.string("category_classification");
+          table.timestamp("transaction_datetime");
           table.string("source_document_type");
           table.string("source_document_number");
           table.timestamp("source_document_date", { useTz: true });
