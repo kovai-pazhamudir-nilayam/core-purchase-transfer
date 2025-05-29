@@ -17,7 +17,8 @@ exports.up = knex => {
           table.jsonb("source_document");
           table.string("destination_site_id");
           table.jsonb("destination_document");
-          table.timestamp("sto_date", { useTz: true });
+          table.timestamp("transaction_datetime");
+          table.timestamp("sto_date");
           table.jsonb("sto_amount");
 
           table

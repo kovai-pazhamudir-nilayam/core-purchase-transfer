@@ -22,6 +22,7 @@ const postPurchaseOrder = {
     properties: {
       po_number: { type: "string" },
       destination_site_id: { type: "string" },
+      transaction_datetime: { type: "string", format: "date" },
       supplier: {
         type: "object",
         required: ["vendor_id", "supplier_document", "supplier_address"],

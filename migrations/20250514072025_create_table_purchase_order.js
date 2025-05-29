@@ -18,6 +18,7 @@ exports.up = knex => {
           table.jsonb("supplier_address");
           table.jsonb("destination_address");
           table.jsonb("expected_delivery");
+          table.timestamp("transaction_datetime");
           table.string("category_classification");
           table.jsonb("po_email_ids");
           table.enu("grn_restrictions", [
