@@ -1,5 +1,6 @@
-async function transformCatalogDetail({ ksinDetails }) {
+function transformCatalogDetail({ ksinDetails }) {
   const itemMap = {};
+  console.log("ksinDetails", ksinDetails);
   ksinDetails.forEach(item => {
     itemMap[item.ksin] = {
       ksin: item.ksin,
@@ -18,6 +19,7 @@ async function transformCatalogDetail({ ksinDetails }) {
       is_weighed_item: item?.is_weighed_item
     };
   });
+  console.log("itemMap", itemMap);
   return itemMap;
 }
 

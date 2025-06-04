@@ -31,7 +31,7 @@ const postCreateGrn = {
       },
       source_document_number: { type: "string" },
       source_document_date: { type: "string", format: "date" },
-      transaction_datetime: { type: "string", format: "date" },
+      transaction_datetime: { type: "string", format: "date-time" },
       supplier: { $ref: "request-supplier#" },
       supplier_invoice: { $ref: "request-supplier-invoice#" },
       grn_lines: {

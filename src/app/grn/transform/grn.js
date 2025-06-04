@@ -20,6 +20,7 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
   const { grn_lines, grn_id, agn_number, supplier } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
+  console.log("itemMap", itemMap);
   return grn_lines.map(line => {
     const {
       item,
@@ -34,7 +35,9 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
       lot_params,
       ...rest
     } = line;
-    const enrichedItem = itemMap[item?.ksin] || item;
+    const enrichedItem = itemMap[item?.ksin] ?? item;
+    console.log("enrichedItem", enrichedItem);
+    console.log("itemMap1", itemMap[item?.ksin]);
     const taxes = [];
     if (cess_amount && cess_rate) {
       taxes.push({
