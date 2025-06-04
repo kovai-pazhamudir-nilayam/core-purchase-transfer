@@ -16,7 +16,7 @@ RUN addgroup kpn && \
 
 # Upstream bug with hadolint ordering
 # hadolint ignore=DL4006
-RUN apk add --no-cache binutils=2.43.1-r2
+RUN apk add --no-cache binutils=2.44-r0
 RUN npm config set update-notifier false 
 RUN npm ci --no-audit --production --ignore-scripts
 RUN strip /usr/local/bin/node
