@@ -1,6 +1,6 @@
 function transformCatalogDetail({ ksinDetails }) {
   const itemMap = {};
-  console.log("ksinDetails", ksinDetails);
+  // console.log("ksinDetails", ksinDetails);
   ksinDetails.forEach(item => {
     itemMap[item.ksin] = {
       ksin: item.ksin,
