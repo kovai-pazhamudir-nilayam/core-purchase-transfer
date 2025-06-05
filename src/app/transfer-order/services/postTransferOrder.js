@@ -32,7 +32,7 @@ function postTransferOrderService(fastify) {
     const existingStoOrder = await getTransferOrderByConditin.call(
       fastify.knex,
       {
-        codition: {
+        condition: {
           source_site_id,
           external_reference_number: transaction_reference_number
         },
