@@ -20,6 +20,8 @@ exports.up = knex => {
           table.jsonb("sto_quantity");
           table.jsonb("unit_price");
           table.boolean("tax_included_in_price");
+          table.jsonb("mrp");
+          table.jsonb("lot_params");
           // table.string("cess_rate");
           // table.string("cess_amount");
           // table.string("gst_rate");

@@ -12,6 +12,7 @@ const postTransferOrder = {
       "source_site_id",
       "source_document",
       "destination_site_id",
+      // "transaction_datetime",
       "transaction_reference_number",
       // "destination_document",
       "sto_date",
@@ -26,6 +27,7 @@ const postTransferOrder = {
         enum: ["STO", "RSTO"]
       },
       sto_reason: { type: "string" }, // Optional unless RSTO
+      transaction_datetime: { type: "string", format: "date-time" },
       source_site_id: { type: "string" },
       source_document: { $ref: "request-source-document#" },
       transaction_reference_number: { type: "string" },
@@ -53,6 +55,7 @@ const postTransferOrder = {
           properties: {
             item: { $ref: "request-po-item#" },
             sto_quantity: { $ref: "request-st-quantity#" },
+            mrp: { $ref: "request-amount#" },
             cess_rate: { type: "number" },
             cess_amount: { type: "number" },
             gst_rate: { type: "number" },
@@ -60,8 +63,20 @@ const postTransferOrder = {
             unit_price: {
               $ref: "request-amount#"
             },
+            lot_params: {
+              type: "array",
+              items: {
+                type: "object",
+                required: ["name", "value"],
+                properties: {
+                  name: { type: "string" },
+                  value: { type: "string" }
+                }
+              }
+            },
             tax_included_in_price: { type: "boolean" },
             tax_code: { type: "string" },
+
             taxes: {
               type: "array",
               items: {

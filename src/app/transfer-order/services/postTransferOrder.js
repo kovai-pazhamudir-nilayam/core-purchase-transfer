@@ -67,7 +67,7 @@ function postTransferOrderService(fastify) {
     sto_number =
       sto_number ||
       (await getNextTransactionNumber({
-        type: "ST",
+        type: "TO",
         fastify
       }));
 

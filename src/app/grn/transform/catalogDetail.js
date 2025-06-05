@@ -19,7 +19,7 @@ function transformCatalogDetail({ ksinDetails }) {
       is_weighed_item: item?.is_weighed_item
     };
   });
-  console.log("itemMap", itemMap);
+  // console.log("itemMap", itemMap);
   return itemMap;
 }
 

@@ -387,6 +387,16 @@ const stoQuantity = {
   }
 };
 
+const returnPurchaseQuantity = {
+  $id: "request-rp-quantity",
+  type: "object",
+  required: ["quantity", "quantity_uom"],
+  properties: {
+    quantity: { type: "number" },
+    quantity_uom: { type: "string" }
+  }
+};
+
 const stoHuDetails = {
   $id: "request-hu-details",
   type: "array",
@@ -442,5 +452,6 @@ exports.commonRequestSchemas = [
   stoDestinationDocument,
   stoQuantity,
   stoHuDetails,
-  stoAmount
+  stoAmount,
+  returnPurchaseQuantity
 ];

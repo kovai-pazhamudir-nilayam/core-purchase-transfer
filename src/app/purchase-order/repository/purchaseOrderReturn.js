@@ -1,14 +1,17 @@
 const { logQuery } = require("../../commons/helpers");
-const { PURCHASE_ORDER, PURCHASE_LINE } = require("../commons/constants");
+const {
+  PURCHASE_ORDER_RETURN,
+  PURCHASE_ORDER_RETURN_LINE
+} = require("../commons/constants");
 
-function purchaseOrderRepo(fastify) {
+function purchaseOrderReturnRepo(fastify) {
   async function upsertOrder({ input, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_ORDER.NAME)
+    const query = knex(PURCHASE_ORDER_RETURN.NAME)
       .insert(input)
       .onConflict([
-        PURCHASE_ORDER.COLUMNS.DESTINATION_SITE_ID,
-        PURCHASE_ORDER.COLUMNS.EXTERNAL_REFERENCE_NUMBER
+        PURCHASE_ORDER_RETURN.COLUMNS.SOURCE_SITE_ID,
+        PURCHASE_ORDER_RETURN.COLUMNS.EXTERNAL_REFERENCE_NUMBER
       ]) // upsert by primary key
       .merge()
       .returning("*");
@@ -16,7 +19,7 @@ function purchaseOrderRepo(fastify) {
     logQuery({
       logger: fastify.log,
       query,
-      context: "Upsert Order",
+      context: "Upsert PO Return",
       logTrace
     });
 
@@ -26,16 +29,16 @@ function purchaseOrderRepo(fastify) {
 
   async function upsertPurchaseOrderLines({ input, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_LINE.NAME)
+    const query = knex(PURCHASE_ORDER_RETURN_LINE.NAME)
       .insert(input)
-      .onConflict(PURCHASE_LINE.COLUMNS.PO_LINE_ID) // ['purchase_order_id', 'po_line_id']
+      .onConflict(PURCHASE_ORDER_RETURN_LINE.COLUMNS.PO_LINE_ID) // ['purchase_order_id', 'po_line_id']
       .merge()
       .returning("*");
 
     logQuery({
       logger: fastify.log,
       query,
-      context: "Upsert Order Lines",
+      context: "Upsert PO return Lines",
       logTrace
     });
 
@@ -45,8 +48,11 @@ function purchaseOrderRepo(fastify) {
 
   async function deletePurchaseOrderLines({ purchaseOrderId, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_LINE.NAME)
-      .where(PURCHASE_LINE.COLUMNS.PURCHASE_ORDER_ID, purchaseOrderId)
+    const query = knex(PURCHASE_ORDER_RETURN_LINE.NAME)
+      .where(
+        PURCHASE_ORDER_RETURN_LINE.COLUMNS.PURCHASE_ORDER_ID,
+        purchaseOrderId
+      )
       .del();
 
     logQuery({
@@ -64,17 +70,17 @@ function purchaseOrderRepo(fastify) {
 
     const query = knex
       .select([
-        `${PURCHASE_ORDER.NAME}.*`,
-        knex.raw(`json_agg(${PURCHASE_LINE.NAME}.*) AS po_lines`)
+        `${PURCHASE_ORDER_RETURN.NAME}.*`,
+        knex.raw(`json_agg(${PURCHASE_ORDER_RETURN_LINE.NAME}.*) AS po_lines`)
       ])
-      .from(PURCHASE_ORDER.NAME)
+      .from(PURCHASE_ORDER_RETURN.NAME)
       .leftJoin(
-        PURCHASE_LINE.NAME,
-        `${PURCHASE_ORDER.NAME}.purchase_order_id`,
-        `${PURCHASE_LINE.NAME}.purchase_order_id`
+        PURCHASE_ORDER_RETURN_LINE.NAME,
+        `${PURCHASE_ORDER_RETURN.NAME}.purchase_order_id`,
+        `${PURCHASE_ORDER_RETURN_LINE.NAME}.purchase_order_id`
       )
-      .where(`${PURCHASE_ORDER.NAME}.purchase_order_id`, purchaseOrderId)
-      .groupBy(`${PURCHASE_ORDER.NAME}.purchase_order_id`);
+      .where(`${PURCHASE_ORDER_RETURN.NAME}.purchase_order_id`, purchaseOrderId)
+      .groupBy(`${PURCHASE_ORDER_RETURN.NAME}.purchase_order_id`);
 
     logQuery({
       logger: fastify.log,
@@ -89,32 +95,33 @@ function purchaseOrderRepo(fastify) {
 
   async function getPurcaseOrderByPoNumber({ po_number, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_ORDER.NAME)
+    const query = knex(PURCHASE_ORDER_RETURN.NAME)
       .select("*")
-      .where(PURCHASE_ORDER.COLUMNS.PO_NUMBER, po_number)
+      .where(PURCHASE_ORDER_RETURN.COLUMNS.PO_NUMBER, po_number)
       .first();
 
     logQuery({
       logger: fastify.log,
       query,
-      context: "Fetch Purchase Order by po_number",
+      context: "Fetch Purchase Order Return by po_number",
       logTrace
     });
     const response = await query;
     return response;
   }
 
-  async function getPurchaseOrderCondition({ condition, logTrace }) {
+  async function getPurchaseOrderByCondition({ condition, logTrace }) {
     const knex = this;
-    const query = knex(PURCHASE_ORDER.NAME).select("*").where(condition);
+    const query = knex(PURCHASE_ORDER_RETURN.NAME).select("*").where(condition);
 
     logQuery({
       logger: fastify.log,
       query,
-      context: "Fetch Purchase Order by condition",
+      context: "Fetch Purchase Order Return by condition",
       logTrace
     });
     const response = await query;
+    // console.log("response rp", response);
     return response;
   }
 
@@ -124,8 +131,8 @@ function purchaseOrderRepo(fastify) {
     upsertPurchaseOrderLines,
     getPurcaseOrderByPoNumber,
     deletePurchaseOrderLines,
-    getPurchaseOrderCondition
+    getPurchaseOrderByCondition
   };
 }
 
-module.exports = purchaseOrderRepo;
+module.exports = purchaseOrderReturnRepo;
