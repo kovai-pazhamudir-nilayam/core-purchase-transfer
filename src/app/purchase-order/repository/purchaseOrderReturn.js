@@ -46,13 +46,10 @@ function purchaseOrderReturnRepo(fastify) {
     return response;
   }
 
-  async function deletePurchaseOrderLines({ purchaseOrderId, logTrace }) {
+  async function deletePurchaseOrderLines({ rp_number, logTrace }) {
     const knex = this;
     const query = knex(PURCHASE_ORDER_RETURN_LINE.NAME)
-      .where(
-        PURCHASE_ORDER_RETURN_LINE.COLUMNS.PURCHASE_ORDER_ID,
-        purchaseOrderId
-      )
+      .where(PURCHASE_ORDER_RETURN_LINE.COLUMNS.RP_NUMBER, rp_number)
       .del();
 
     logQuery({

@@ -74,7 +74,7 @@ const PURCHASE_ORDER_RETURN_LINE = {
   NAME: "purchase_order_return_line",
   COLUMNS: {
     PO_LINE_ID: "po_line_id",
-    PO_NUMBER: "po_number",
+    RP_NUMBER: "rp_number",
     AGN_LINE_ID: "agn_line_id",
     AGN_NUMBER: "agn_number",
     ITEM: "item",
