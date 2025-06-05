@@ -4,13 +4,16 @@ const {
   transformForStoTransferOrder,
   transformForStoTransferOrderLines
 } = require("../transform/transferOrder");
+const {
+  getNextTransactionNumber
+} = require("../../utils/GenerateTransactionSequence");
 
 function postTransferOrderService(fastify) {
   const {
     upsertTransferOrder,
     upsertTransferOrderLines,
-    getTransferOrderByStoNumber,
-    deleteStoTransferLines
+    deleteStoTransferLines,
+    getTransferOrderByConditin
   } = transferOrderRepo(fastify);
   const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
@@ -19,17 +22,26 @@ function postTransferOrderService(fastify) {
       message: "create sto transfer-order service",
       logTrace
     });
-
-    const { sto_number, sto_lines, destination_site_id } = body;
-    const existingStoOrder = await getTransferOrderByStoNumber.call(
+    let sto_number = null;
+    const {
+      sto_lines,
+      destination_site_id,
+      source_site_id,
+      transaction_reference_number
+    } = body;
+    const existingStoOrder = await getTransferOrderByConditin.call(
       fastify.knex,
       {
-        sto_number,
+        codition: {
+          source_site_id,
+          external_reference_number: transaction_reference_number
+        },
         logTrace
       }
     );
 
-    if (existingStoOrder) {
+    if (existingStoOrder.length) {
+      sto_number = existingStoOrder[0].sto_number;
       await deleteStoTransferLines.call(fastify.knex, {
         sto_number,
         logTrace
@@ -52,16 +64,22 @@ function postTransferOrderService(fastify) {
       siteId: destination_site_id,
       logTrace
     });
-    // const outletMap = new Map(
-    //   outletDetails.map(item => [item.outlet_id, item])
-    // );
+    sto_number =
+      sto_number ||
+      (await getNextTransactionNumber({
+        type: "ST",
+        fastify
+      }));
+
     const purchaseOrderInput = transformForStoTransferOrder({
-      body
+      body,
+      stoNumber: sto_number
     });
     const purchaseOrderLinesInput = transformForStoTransferOrderLines({
       body,
       ksinDetails,
-      outletDetails
+      outletDetails,
+      stoNumber: sto_number
     });
 
     const knexTrx = await fastify.knex.transaction();

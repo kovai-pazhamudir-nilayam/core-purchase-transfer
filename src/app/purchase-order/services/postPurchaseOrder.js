@@ -1,17 +1,19 @@
-const { v4: uuidv4 } = require("uuid");
 const purchaseOrderRepo = require("../repository/purchaseOrder");
 const downstreamCallsRepo = require("../repository/downstreamCalls");
 const {
   transformForPurchaseOrder,
   transformForPurchaseOrderLines
 } = require("../transform/purchaseOrder");
+const {
+  getNextTransactionNumber
+} = require("../../utils/GenerateTransactionSequence");
 
 function postPurchaseOrderService(fastify) {
   const {
     upsertOrder,
     upsertPurchaseOrderLines,
-    getPurcaseOrderByPoNumber,
-    deletePurchaseOrderLines
+    deletePurchaseOrderLines,
+    getPurchaseOrderCondition
   } = purchaseOrderRepo(fastify);
   const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
@@ -20,18 +22,22 @@ function postPurchaseOrderService(fastify) {
       message: "create purchase-order service",
       logTrace
     });
-    let purchaseOrderId = uuidv4();
+    let po_number = null;
 
-    const { po_lines, po_number } = body;
-    const existingPo = await getPurcaseOrderByPoNumber.call(fastify.knex, {
-      po_number,
+    const { po_lines, destination_site_id, transaction_reference_number } =
+      body;
+    const existingPo = await getPurchaseOrderCondition.call(fastify.knex, {
+      condition: {
+        destination_site_id,
+        external_reference_number: transaction_reference_number
+      },
       logTrace
     });
 
-    if (existingPo) {
-      purchaseOrderId = existingPo.purchase_order_id;
+    if (existingPo.length) {
+      po_number = existingPo[0].po_number;
       await deletePurchaseOrderLines.call(fastify.knex, {
-        purchaseOrderId,
+        po_number,
         logTrace
       });
     }
@@ -54,14 +60,21 @@ function postPurchaseOrderService(fastify) {
       logTrace
     });
 
+    po_number =
+      po_number ||
+      (await getNextTransactionNumber({
+        fastify,
+        type: "PO"
+      }));
+
     const purchaseOrderInput = transformForPurchaseOrder({
-      purchaseOrderId,
+      poNumber: po_number,
       body,
       outletDetails
     });
     const purchaseOrderLinesInput = transformForPurchaseOrderLines({
       body,
-      purchaseOrderId,
+      poNumber: po_number,
       po_lines,
       ksinDetails,
       outletDetails
@@ -80,7 +93,7 @@ function postPurchaseOrderService(fastify) {
         })
       ]);
       await knexTrx.commit();
-      return { purchase_order_id: purchaseOrderId };
+      return { po_number };
     } catch (error) {
       await knexTrx.rollback();
       throw error;

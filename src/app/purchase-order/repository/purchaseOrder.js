@@ -6,7 +6,10 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(PURCHASE_ORDER.NAME)
       .insert(input)
-      .onConflict(PURCHASE_ORDER.COLUMNS.PURCHASE_ORDER_ID) // upsert by primary key
+      .onConflict([
+        PURCHASE_ORDER.COLUMNS.DESTINATION_SITE_ID,
+        PURCHASE_ORDER.COLUMNS.EXTERNAL_REFERENCE_NUMBER
+      ]) // upsert by primary key
       .merge()
       .returning("*");
 
@@ -101,12 +104,30 @@ function purchaseOrderRepo(fastify) {
     return response;
   }
 
+  async function getPurchaseOrderCondition({ condition, logTrace }) {
+    const knex = this;
+    const query = knex(PURCHASE_ORDER.NAME)
+      .select("*")
+      .where(condition)
+      .first();
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "Fetch Purchase Order by condition",
+      logTrace
+    });
+    const response = await query;
+    return response;
+  }
+
   return {
     upsertOrder,
     fetchOrderWithLines,
     upsertPurchaseOrderLines,
     getPurcaseOrderByPoNumber,
-    deletePurchaseOrderLines
+    deletePurchaseOrderLines,
+    getPurchaseOrderCondition
   };
 }
 

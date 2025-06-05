@@ -8,10 +8,11 @@ const postPurchaseOrder = {
   body: {
     type: "object",
     required: [
-      "po_number",
+      // "po_number",
       "destination_site_id",
       "supplier",
       // "destination_address",
+      "transaction_reference_number",
       "expected_delivery",
       "po_lines",
       // "created_at",
@@ -20,8 +21,9 @@ const postPurchaseOrder = {
     ],
     additionalProperties: false,
     properties: {
-      po_number: { type: "string" },
+      // po_number: { type: "string" },
       destination_site_id: { type: "string" },
+      transaction_reference_number: { type: "string" },
       transaction_datetime: { type: "string", format: "date" },
       supplier: {
         type: "object",
@@ -29,6 +31,7 @@ const postPurchaseOrder = {
         additionalProperties: false,
         properties: {
           vendor_id: { type: "string" },
+          vendor_name: { type: "string" },
           supplier_document: {
             type: "object",
             required: ["state_code", "number"],
@@ -100,7 +103,7 @@ const postPurchaseOrder = {
     201: {
       type: "object",
       properties: {
-        purchase_order_id: { type: "string", format: "uuid" }
+        po_number: { type: "string" }
       }
     },
     ...errorSchemas

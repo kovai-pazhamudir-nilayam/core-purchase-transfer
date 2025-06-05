@@ -1,14 +1,13 @@
 const purchaseOrderRepo = require("../repository/grn");
 const downstreamCallsRepo = require("../repository/downstreamCalls");
 const { transformForGrn, transformForGrnLines } = require("../transform/grn");
+const {
+  getNextTransactionNumber
+} = require("../../utils/GenerateTransactionSequence");
 
 function postGrnService(fastify) {
-  const {
-    upsertOrder,
-    upsertPurchaseOrderLines,
-    getGrnByIdNumber,
-    deleteGrnLines
-  } = purchaseOrderRepo(fastify);
+  const { upsertGrn, upsertGrnLines, getGrnByCondition, deleteGrnLines } =
+    purchaseOrderRepo(fastify);
   const { getKsinDetails, getOutletBySiteId } = downstreamCallsRepo(fastify);
 
   return async ({ body, logTrace }) => {
@@ -17,19 +16,40 @@ function postGrnService(fastify) {
       logTrace
     });
 
-    const { grn_id, grn_lines, destination_site_id } = body;
-    const existingGrn = await getGrnByIdNumber.call(fastify.knex, {
-      grn_id,
+    const {
+      // grn_id,
+      grn_lines,
+      destination_site_id,
+      transaction_reference_number
+    } = body;
+
+    let grn_number = null;
+    const existingGrn = await getGrnByCondition.call(fastify.knex, {
+      condition: {
+        destination_site_id,
+        external_reference_number: transaction_reference_number
+      },
+      logTrace
+    });
+    fastify.log.info({
+      message: "Checking for existing GRN",
+      existingGrn,
       logTrace
     });
 
-    if (existingGrn) {
+    if (existingGrn.length) {
+      fastify.log.info({
+        message: "Existing GRN found true",
+        existingGrn,
+        logTrace
+      });
+      grn_number = existingGrn[0].grn_number;
       fastify.log.info({
         message: "Grn already exists, deleting existing lines",
         logTrace
       });
       await deleteGrnLines.call(fastify.knex, {
-        grn_id,
+        grn_number,
         logTrace
       });
     }
@@ -54,29 +74,38 @@ function postGrnService(fastify) {
     //   outletDetails.map(item => [item.outlet_id, item])
     // );
 
+    grn_number =
+      grn_number ||
+      (await getNextTransactionNumber({
+        fastify,
+        type: "GR"
+      }));
+
     const purchaseOrderInput = transformForGrn({
+      grn_number,
       body
     });
     const purchaseOrderLinesInput = transformForGrnLines({
       body,
       ksinDetails,
-      outletDetails
+      outletDetails,
+      grn_number
     });
 
     const knexTrx = await fastify.knex.transaction();
     try {
       await Promise.all([
-        upsertOrder.call(knexTrx, {
+        upsertGrn.call(knexTrx, {
           input: purchaseOrderInput,
           logTrace
         }),
-        upsertPurchaseOrderLines.call(knexTrx, {
+        upsertGrnLines.call(knexTrx, {
           input: purchaseOrderLinesInput,
           logTrace
         })
       ]);
       await knexTrx.commit();
-      return { grn_id };
+      return { grn_number };
     } catch (error) {
       await knexTrx.rollback();
       throw error;

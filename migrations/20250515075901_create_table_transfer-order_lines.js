@@ -10,9 +10,9 @@ exports.up = knex => {
             .notNullable()
             .primary()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-          table.string("sto_number").notNullable(); // foreign key column
           table
-            .foreign("sto_number")
+            .string("sto_number")
+            .notNullable()
             .references("sto_number")
             .inTable("transfer_order")
             .onDelete("CASCADE");
@@ -20,9 +20,9 @@ exports.up = knex => {
           table.jsonb("sto_quantity");
           table.jsonb("unit_price");
           table.boolean("tax_included_in_price");
-          table.string("cess_rate");
-          table.string("cess_amount");
-          table.string("gst_rate");
+          // table.string("cess_rate");
+          // table.string("cess_amount");
+          // table.string("gst_rate");
           table.string("tax_code");
           table.jsonb("taxes");
           table.jsonb("hu_details");

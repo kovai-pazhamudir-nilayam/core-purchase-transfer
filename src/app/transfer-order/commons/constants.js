@@ -1,8 +1,8 @@
 const TRANSFER_ORDER = {
   NAME: "transfer_order",
   COLUMNS: {
-    ID: "id",
     STO_NUMBER: "sto_number",
+    EXTERNAL_REFERENCE_NUMBER: "external_reference_number",
     STO_TYPE: "sto_type",
     STO_REASON: "sto_reason",
     SOURCE_SITE_ID: "source_site_id",
@@ -21,7 +21,6 @@ const TRANSFER_ORDER = {
 const TRANSFER_ORDER_LINE = {
   NAME: "transfer_order_line",
   COLUMNS: {
-    ID: "id",
     STO_LINE_ID: "sto_line_id",
     STO_NUMBER: "sto_number",
     ITEM: "item",

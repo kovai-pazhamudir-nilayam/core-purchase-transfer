@@ -6,7 +6,10 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(TRANSFER_ORDER.NAME)
       .insert(input)
-      .onConflict(TRANSFER_ORDER.COLUMNS.STO_NUMBER)
+      .onConflict([
+        TRANSFER_ORDER.COLUMNS.SOURCE_SITE_ID,
+        TRANSFER_ORDER.COLUMNS.EXTERNAL_REFERENCE_NUMBER
+      ])
       .merge()
       .returning("*");
 
@@ -25,7 +28,7 @@ function purchaseOrderRepo(fastify) {
     const knex = this;
     const query = knex(TRANSFER_ORDER_LINE.NAME)
       .insert(input)
-      .onConflict(TRANSFER_ORDER_LINE.COLUMNS.ID)
+      .onConflict(TRANSFER_ORDER_LINE.COLUMNS.STO_LINE_ID)
       .merge();
 
     logQuery({
@@ -55,6 +58,20 @@ function purchaseOrderRepo(fastify) {
     return response;
   }
 
+  async function getTransferOrderByConditin({ condition, logTrace }) {
+    const knex = this;
+    const query = knex(TRANSFER_ORDER.NAME).select("*").where(condition);
+
+    logQuery({
+      logger: fastify.log,
+      query,
+      context: "Fetch STO Transfer Order by condition",
+      logTrace
+    });
+    const response = await query;
+    return response;
+  }
+
   async function deleteStoTransferLines({ sto_number, logTrace }) {
     const knex = this;
     const query = knex(TRANSFER_ORDER_LINE.NAME)
@@ -75,7 +92,8 @@ function purchaseOrderRepo(fastify) {
     upsertTransferOrder,
     upsertTransferOrderLines,
     getTransferOrderByStoNumber,
-    deleteStoTransferLines
+    deleteStoTransferLines,
+    getTransferOrderByConditin
   };
 }
 

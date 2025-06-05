@@ -7,8 +7,8 @@ const GRN_RESTRICTIONS = {
 const PURCHASE_ORDER = {
   NAME: "purchase_order",
   COLUMNS: {
-    PURCHASE_ORDER_ID: "purchase_order_id",
     PO_NUMBER: "po_number",
+    EXTERNAL_REFERENCE_NUMBER: "external_reference_number",
     DESTINATION_SITE_ID: "destination_site_id",
     VENDOR_ID: "vendor_id",
     SUPPLIER_DOCUMENT: "supplier_document",
@@ -29,7 +29,7 @@ const PURCHASE_ORDER = {
 const PURCHASE_LINE = {
   NAME: "purchase_order_line",
   COLUMNS: {
-    PURCHASE_ORDER_LINE_ID: "purchase_order_line_id",
+    PO_NUMBER: "po_number",
     PO_LINE_ID: "po_line_id",
     ITEM: "item",
     PO_QUANTITY: "po_quantity",

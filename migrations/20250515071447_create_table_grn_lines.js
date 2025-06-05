@@ -10,17 +10,17 @@ exports.up = knex => {
             .primary()
             .notNullable()
             .defaultTo(knex.raw("uuid_generate_v4()"));
-          table.string("grn_id").notNullable();
           table
-            .foreign("grn_id")
-            .references("grn_id")
+            .string("grn_number")
+            .notNullable()
+            .references("grn_number")
             .inTable("grn")
             .onDelete("CASCADE");
           table.string("agn_line_id");
           table.string("agn_number");
-          table.string("cess_rate");
-          table.string("cess_amount");
-          table.string("gst_rate");
+          // table.string("cess_rate");
+          // table.string("cess_amount");
+          // table.string("gst_rate");
           table.jsonb("item");
           table.jsonb("grn_quantity");
           table.jsonb("mrp");

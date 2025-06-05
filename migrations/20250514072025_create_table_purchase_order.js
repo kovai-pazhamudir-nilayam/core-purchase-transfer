@@ -5,14 +5,9 @@ exports.up = knex => {
     .then(exists => {
       if (!exists) {
         return knex.schema.createTable("purchase_order", table => {
-          table
-            .uuid("purchase_order_id")
-            .primary()
-            .notNullable()
-            .defaultTo(knex.raw("uuid_generate_v4()"));
-          table.string("po_number").notNullable();
+          table.string("po_number").primary().notNullable();
           table.string("destination_site_id");
-          // TODO : TBD
+          table.string("external_reference_number");
           table.string("vendor_id"); // supplier vendor_id
           table.jsonb("supplier_document");
           table.jsonb("supplier_address");
@@ -36,6 +31,7 @@ exports.up = knex => {
             .defaultTo(knex.fn.now()); // datetime
           table.uuid("approved_by"); // uuid
           table.timestamp("po_expiry_date", { useTz: true }); // date only
+          table.unique(["external_reference_number", "destination_site_id"]);
         });
       }
       return false;

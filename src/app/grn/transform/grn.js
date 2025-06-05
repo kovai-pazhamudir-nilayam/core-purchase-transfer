@@ -1,26 +1,33 @@
 const { transformCatalogDetail } = require("./catalogDetail");
 
-function transformForGrn({ body }) {
+function transformForGrn({ grn_number, body }) {
   const {
     supplier,
     supplier_invoice,
     invoice_adjustments,
+    transaction_reference_number,
     grn_lines,
     ...rest
   } = body;
   const response = {
+    grn_number,
     supplier: JSON.stringify(supplier),
     supplier_invoice: JSON.stringify(supplier_invoice),
     invoice_adjustments: JSON.stringify(invoice_adjustments),
+    external_reference_number: transaction_reference_number,
     ...rest
   };
   return response;
 }
-function transformForGrnLines({ body, ksinDetails, outletDetails }) {
-  const { grn_lines, grn_id, agn_number, supplier } = body;
+function transformForGrnLines({
+  body,
+  ksinDetails,
+  outletDetails,
+  grn_number
+}) {
+  const { grn_lines, supplier } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
-  console.log("itemMap", itemMap);
   return grn_lines.map(line => {
     const {
       item,
@@ -36,8 +43,7 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
       ...rest
     } = line;
     const enrichedItem = itemMap[item?.ksin] ?? item;
-    console.log("enrichedItem", enrichedItem);
-    console.log("itemMap1", itemMap[item?.ksin]);
+
     const taxes = [];
     if (cess_amount && cess_rate) {
       taxes.push({
@@ -71,8 +77,7 @@ function transformForGrnLines({ body, ksinDetails, outletDetails }) {
       });
     }
     return {
-      grn_id,
-      agn_number,
+      grn_number,
       item: JSON.stringify(enrichedItem),
       grn_quantity: JSON.stringify(grn_quantity),
       mrp: JSON.stringify(mrp),

@@ -8,10 +8,10 @@ const postCreateGrn = {
   body: {
     type: "object",
     required: [
-      "grn_id",
-      "agn_number",
+      // "grn_id",
+      // "agn_number",
       "destination_site_id",
-
+      "transaction_reference_number",
       "source_document_type",
       "source_document_number",
       "source_document_date",
@@ -21,8 +21,8 @@ const postCreateGrn = {
     ],
     additionalProperties: false,
     properties: {
-      grn_id: { type: "string" },
       agn_number: { type: "string" },
+      transaction_reference_number: { type: "string" },
       destination_site_id: { type: "string" },
       category_classification: { type: "string" },
       source_document_type: {
@@ -113,7 +113,7 @@ const postCreateGrn = {
     201: {
       type: "object",
       properties: {
-        grn_id: { type: "string" }
+        grn_number: { type: "string" }
       }
     },
     ...errorSchemas

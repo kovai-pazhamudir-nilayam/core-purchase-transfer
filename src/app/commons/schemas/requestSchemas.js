@@ -271,6 +271,7 @@ const supplierSchema = {
       enum: ["VENDOR", "WAREHOUSE", "OUTLET", "CC"]
     },
     vendor_id: { type: "string" },
+    vendor_name: { type: "string" },
     source_site_id: { type: "string" },
     supplier_document: {
       type: "object",

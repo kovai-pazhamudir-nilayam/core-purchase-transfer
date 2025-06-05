@@ -1,12 +1,12 @@
 const GRN = {
   NAME: "grn",
   COLUMNS: {
-    ID: "id",
-    GRN_ID: "grn_id",
+    GRN_NUMBER: "grn_number",
     AGN_NUMBER: "agn_number",
     DESTINATION_SITE_ID: "destination_site_id",
     CATEGORY_CLASSIFICATION: "category_classification",
     SOURCE_DOCUMENT_TYPE: "source_document_type",
+    EXTERNAL_REFERENCE_NUMBER: "external_reference_number",
     SOURCE_DOCUMENT_NUMBER: "source_document_number",
     SOURCE_DOCUMENT_DATE: "source_document_date",
     SUPPLIER: "supplier",
@@ -25,7 +25,7 @@ const GRN_LINE = {
   NAME: "grn_line",
   COLUMNS: {
     GRN_LINE_ID: "grn_line_id",
-    GRN_ID: "grn_id",
+    GRN_NUMBER: "grn_number",
     AGN_LINE_ID: "agn_line_id",
     AGN_NUMBER: "agn_number",
     ITEM: "item",

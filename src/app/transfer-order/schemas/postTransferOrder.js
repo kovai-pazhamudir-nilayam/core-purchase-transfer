@@ -7,11 +7,12 @@ const postTransferOrder = {
   body: {
     type: "object",
     required: [
-      "sto_number",
+      // "sto_number",
       "sto_type",
       "source_site_id",
       "source_document",
       "destination_site_id",
+      "transaction_reference_number",
       // "destination_document",
       "sto_date",
       "sto_amount",
@@ -19,7 +20,7 @@ const postTransferOrder = {
     ],
     additionalProperties: false,
     properties: {
-      sto_number: { type: "string" },
+      // sto_number: { type: "string" },
       sto_type: {
         type: "string",
         enum: ["STO", "RSTO"]
@@ -27,6 +28,7 @@ const postTransferOrder = {
       sto_reason: { type: "string" }, // Optional unless RSTO
       source_site_id: { type: "string" },
       source_document: { $ref: "request-source-document#" },
+      transaction_reference_number: { type: "string" },
       destination_site_id: { type: "string" },
       // destination_document: { $ref: "request-destination-document#" },
       sto_date: { type: "string", format: "date-time" },

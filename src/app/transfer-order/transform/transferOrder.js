@@ -1,18 +1,21 @@
 const { transformCatalogDetail } = require("./catalogDetail");
 
-function transformForStoTransferOrder({ body }) {
+function transformForStoTransferOrder({ body, stoNumber }) {
   const {
     source_document,
     destination_document,
     sto_amount,
     po_email_ids,
     sto_lines,
+    transaction_reference_number,
     ...rest
   } = body;
   const response = {
+    sto_number: stoNumber,
     source_document: JSON.stringify(source_document),
     destination_document: JSON.stringify(destination_document),
     sto_amount: JSON.stringify(sto_amount),
+    external_reference_number: transaction_reference_number,
     ...rest
   };
   return response;
@@ -20,9 +23,10 @@ function transformForStoTransferOrder({ body }) {
 function transformForStoTransferOrderLines({
   body,
   ksinDetails,
-  outletDetails
+  outletDetails,
+  stoNumber
 }) {
-  const { sto_lines, source_document, sto_number } = body;
+  const { sto_lines, source_document } = body;
   const itemMap = transformCatalogDetail({ ksinDetails });
 
   return sto_lines.map(line => {
@@ -70,7 +74,7 @@ function transformForStoTransferOrderLines({
     }
 
     return {
-      sto_number,
+      sto_number: stoNumber,
       item: JSON.stringify(enrichedItem),
       sto_quantity: JSON.stringify(sto_quantity),
       unit_price: JSON.stringify(unit_price),

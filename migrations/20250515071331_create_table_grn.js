@@ -5,14 +5,10 @@ exports.up = knex => {
     .then(exists => {
       if (!exists) {
         return knex.schema.createTable("grn", table => {
-          table
-            .uuid("id")
-            .primary()
-            .notNullable()
-            .defaultTo(knex.raw("uuid_generate_v4()"));
-          table.string("grn_id").notNullable().unique();
+          table.string("grn_number").primary().notNullable();
           table.string("agn_number").notNullable();
           table.string("destination_site_id");
+          table.string("external_reference_number");
           table.string("category_classification");
           table.timestamp("transaction_datetime");
           table.string("source_document_type");
@@ -31,6 +27,7 @@ exports.up = knex => {
           table.string("created_by");
           table.timestamp("updated_at", { useTz: true });
           table.string("updated_by");
+          table.unique(["external_reference_number", "destination_site_id"]);
         });
       }
       return false;

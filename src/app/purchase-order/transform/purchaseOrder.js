@@ -1,6 +1,6 @@
 const { transformCatalogDetail } = require("./catalogDetail");
 
-function transformForPurchaseOrder({ purchaseOrderId, body, outletDetails }) {
+function transformForPurchaseOrder({ poNumber, body, outletDetails }) {
   // const { v4: uuidv4 } = require("uuid");
 
   const {
@@ -9,23 +9,25 @@ function transformForPurchaseOrder({ purchaseOrderId, body, outletDetails }) {
     expected_delivery,
     po_email_ids,
     po_lines,
+    transaction_reference_number,
     ...rest
   } = body;
   const response = {
-    purchase_order_id: purchaseOrderId,
+    po_number: poNumber,
     vendor_id,
     supplier_document: JSON.stringify(supplier_document),
     supplier_address: JSON.stringify(supplier_address),
     destination_address: JSON.stringify(outletDetails.address),
     expected_delivery: JSON.stringify(expected_delivery),
     po_email_ids: JSON.stringify(po_email_ids),
+    external_reference_number: transaction_reference_number,
     ...rest
   };
   return response;
 }
 function transformForPurchaseOrderLines({
   body,
-  purchaseOrderId,
+  poNumber,
   po_lines,
   ksinDetails,
   outletDetails
@@ -77,7 +79,7 @@ function transformForPurchaseOrderLines({
       });
     }
     return {
-      purchase_order_id: purchaseOrderId,
+      po_number: poNumber,
       item: JSON.stringify(enrichedItem),
       po_quantity: JSON.stringify(po_quantity),
       mrp: JSON.stringify(mrp),
