@@ -99,7 +99,7 @@ const SOURCE_DOCUMENT_TYPE = {
   PO: "PO",
   STO: "STO",
   RSTO: "RSTO",
-  RVP: "RVP"
+  RTV: "RTV"
 };
 
 module.exports = {

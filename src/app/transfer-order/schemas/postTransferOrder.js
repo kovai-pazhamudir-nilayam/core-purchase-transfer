@@ -27,13 +27,19 @@ const postTransferOrder = {
         enum: ["STO", "RSTO"]
       },
       sto_reason: { type: "string" }, // Optional unless RSTO
-      transaction_datetime: { type: "string", format: "date-time" },
+      transaction_datetime: {
+        type: "string",
+        oneOf: [{ format: "date" }, { format: "date-time" }]
+      },
       source_site_id: { type: "string" },
       source_document: { $ref: "request-source-document#" },
       transaction_reference_number: { type: "string" },
       destination_site_id: { type: "string" },
       // destination_document: { $ref: "request-destination-document#" },
-      sto_date: { type: "string", format: "date-time" },
+      sto_date: {
+        type: "string",
+        oneOf: [{ format: "date" }, { format: "date-time" }]
+      },
       sto_amount: { $ref: "request-sto-amount#" },
       sto_lines: {
         type: "array",
