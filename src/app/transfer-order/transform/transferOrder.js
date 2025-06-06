@@ -39,6 +39,8 @@ function transformForStoTransferOrderLines({
       sto_quantity,
       unit_price,
       hu_details,
+      mrp,
+      lot_params,
       ...rest
     } = line;
     const enrichedItem = itemMap[item?.ksin] || item;
@@ -78,6 +80,8 @@ function transformForStoTransferOrderLines({
       item: JSON.stringify(enrichedItem),
       sto_quantity: JSON.stringify(sto_quantity),
       unit_price: JSON.stringify(unit_price),
+      mrp: JSON.stringify(mrp),
+      lot_params: JSON.stringify(lot_params),
       taxes: JSON.stringify(taxes),
       hu_details: JSON.stringify(hu_details),
       ...rest
